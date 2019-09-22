@@ -1,0 +1,14 @@
+San Jose State Book Hub
+Team 15
+Vijaypal Singh, Xinru Lin, Sterling Gamble
+
+Project Description:
+  The application will allow students to make an account on a website and sell books that they are not using. Users will have the ability to put up books that they do not need on sale and other students who need those books can buy it from those sellers. The stakeholders for this application will be the students who put up their books for sale and the students who buy the books using the website. The application depends on the stakeholders to put up books and buy books. College textbooks are expensive, and a lot of students have a hard time buying new books. This application is important for the students who cannot afford new books because they can buy books from their peers for a cheaper price, and it is also beneficial for the environment because it puts books to maximum utilization and reduces waste. This application will also help students make money from their old textbooks by selling it to their peers.
+
+Functional Requirements:
+
+
+
+Non-functional Issues
+-	Graphical User Interface: The website will have a search bar and all the navigation bar tools at the top. The navigation bar will include dropdown menu for department and course number along with Sign In button. If we are not able to use San Jose State Login, we will have another button on navigation bar for Sign Up. The landing page will include this navigation bar at the top with the featured books list displayed horizontally under the navigation bar. Following the featured books list will be the most popular books of the week. There will be another horizontal list for the cheapest books. If the user lands on the front page with logged-in then the popular, cheapest and featured books will be from the same department the user belongs to.
+-	
