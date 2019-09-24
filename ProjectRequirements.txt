@@ -12,8 +12,6 @@ Project Description:
   utilization and reduces waste. This application will also help students make money from their old textbooks by selling it to their 
   peers.
 
-Functional Requirements:
-
 3-Tier Architecure
 	- Tier 1 : Client 
 		- We will be using HTML, CSS, JavaScript, and Bootstrap
@@ -22,7 +20,7 @@ Functional Requirements:
 	- Tier 3: Database
 		- For database we will be using the Oracle open source MySql and we will be accessing the modifying the contents of the database through SQL.
 
-3 tier Architecure diagram: https://drive.google.com/open?id=13IF2XjoLEEC3rpHVpDtB19OrFDniNApo
+3-Tier Architecure Diagram: https://drive.google.com/open?id=13IF2XjoLEEC3rpHVpDtB19OrFDniNApo
 
 Functional Requirements:
 	- How will the user be accessing the system?
