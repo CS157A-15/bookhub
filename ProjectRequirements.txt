@@ -132,4 +132,4 @@ access to the book listing, but only registered users will be able to message th
 viewing books listing and stumbles up on his or her own book in the listing, the seller has access to delete the listing from there 
 wihtout having to go to profile and delete it. All users will have the same access control, but the admin will have control over 
 deleting any listing from the database or adding any listing back.
->>>>>>> 80054ed1980180b72d1145b673d24fc5d682cf41
+
