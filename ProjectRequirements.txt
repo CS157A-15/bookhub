@@ -103,3 +103,33 @@ her search by the name of the book within the search bar or use the dropdowns wi
 				- The exchange of books should take place in a location at which both users had agreed upon.
 				- Users will meet up and exchange goods and part their way. 
 				- There is no intervention in our part.
+
+
+
+Non-functional Issues
+-	Graphical User Interface: The website will have a search bar and all the navigation bar tools at the top. The navigation bar will 
+include dropdown menu for department and course number along with Sign In button. If we are not able to use San Jose State Login, we 
+will have another button on navigation bar for Sign Up. The landing page will include this navigation bar at the top with the featured 
+books list displayed horizontally under the navigation bar. Following the featured books list will be the most popular books of the 
+week. There will be another horizontal list for the cheapest books. If the user lands on the front page with logged-in then the popular, 
+cheapest and featured books will be from the same department the user belongs to. The books will be displayed as cards where the picture 
+on the book will be at the top half of the card and the description of the book will be at the bottom half of the card. The image of the 
+seller will also be added to the card near the bottom in a fixed size circle. The seller image will be small so that it will not affect 
+the UI of the book which is the main focus of the buyer. After searching for a book in the search bar, the books will be listed in 
+cards, and the user can click on the sorting dropdown menu which will be placed at the top right corner to sort the books. When the user 
+clicks on a book, the sign in form will pop-up if the user is not signed in; if the user is signed in, he or she may message the seller 
+about the book. The UI will be very simple and will make heavy use of cards to display books. 
+
+-	The Security: To protect students from scammers, the website will only allow access to San Jose State Students. The use of Okta for 
+signup is due to the security reason. If we are not able to use Okta for signup, we will make the use of San Jose State email for 
+signup. Another security feature is the messaging feature which will ensure that the personal phone number of each user stays private 
+unless the user is comfortable giving it to other students. The messages will be kept private and will only be visible to the sender and 
+the receiver.
+
+-	Access Control: Most of the information about the user will be kept private other than the username and listings. The built-in
+messaging feature is suppose to recieve messages from any other user from SJSU Book Hub. Any person visiting the website will have 
+access to the book listing, but only registered users will be able to message the seller thought the messaging feature. If the seller is 
+viewing books listing and stumbles up on his or her own book in the listing, the seller has access to delete the listing from there 
+wihtout having to go to profile and delete it. All users will have the same access control, but the admin will have control over 
+deleting any listing from the database or adding any listing back.
+>>>>>>> 80054ed1980180b72d1145b673d24fc5d682cf41
