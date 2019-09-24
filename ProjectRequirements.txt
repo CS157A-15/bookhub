@@ -22,7 +22,7 @@ Functional Requirements:
 	- Tier 3: Database
 		- For database we will be using the Oracle open source MySql and we will be accessing the modifying the contents of the database through SQL.
 
-<insert the 3 tier Architecure picture here>
+3 tier Architecure diagram: https://drive.google.com/open?id=13IF2XjoLEEC3rpHVpDtB19OrFDniNApo
 
 Functional Requirements:
 	- How will the user be accessing the system?
