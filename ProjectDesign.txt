@@ -1,0 +1,44 @@
+SJSU Bookhub
+Team 15
+Project Design
+
+
+ENTITIES
+----------------------------------------------------------------------------------------------------------
+Conversation list - It is the entity that will store the conversations a user has with other users of the site.
+Conversation - This contains the messages between two users.
+Messages - The individual message that a user sents
+Users - The people are sign up to the use service.
+Uploaded files -  They are the file that are uploaded by the user to accompany their book listing(for quality assurance).
+Department - This has all the courses within each specific department.
+Courses - The courses available within SJSU
+Listing - A user-made post selling a book for certain course(s)
+
+
+ATTRIBUTES
+----------------------------------------------------------------------------------------------------------
+
+
+DEPENDENCIES
+----------------------------------------------------------------------------------------------------------
+- Finding the listing depends on the department and course that is associated with the listing.
+- The presence of conversations depends on the presence of messages.
+- Uploaded files depend on the Users
+
+RELATIONSHIPS
+----------------------------------------------------------------------------------------------------------
+
+CONSTRAINTS
+----------------------------------------------------------------------------------------------------------
+
+
+
+
+SHOW ISA, MULTI-WAY RELATIONSHP, WEAK ENTITY SETS, ETC THAT APPLIES TO YOUR DESIGN
+----------------------------------------------------------------------------------------------------------
+
+
+
+EXPLANATION FOR EACH ENTITY SET AND RELATIONSHP, WRITE A SHORT DESCRITION DETAILING WHAT IT REPRESENTS OR MODELS.
+(ONE TO TWO SENTENCES PER ENTITY SET AND RELATIONSHIP) THIS IS TO HELP UNDERSTAND WHAT WE ARE MODELING
+----------------------------------------------------------------------------------------------------------
