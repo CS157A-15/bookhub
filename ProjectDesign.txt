@@ -17,13 +17,29 @@ Listing - A user-made post selling a book for certain course(s)
 
 ATTRIBUTES
 ----------------------------------------------------------------------------------------------------------
+Users: 
+    - email: PRIMARY KEY this is the email that user uses to create an account on our site
+    - profile picture: This is the user's profile picture. The website creates a default picture
+        for new accounts.
+    - password: This is part of the login credentials for the user to access their account.
+    - username: This is an optional field. If there is no specified, it will default to their email.
 
+ConversationList:
+    - user: PRIMARY KEY This is going to be using the primary key of Users.
 
+Conversations:
+    - user1: PRIMARY KEY This is going to be using the primary key of one of the first users participating
+        in the conversation.
+    - user2: PRIMARY KEY This is going to be using the primary key of one of the second users participating
+        in the conversation.
 DEPENDENCIES
 ----------------------------------------------------------------------------------------------------------
 - Finding the listing depends on the department and course that is associated with the listing.
 - The presence of conversations depends on the presence of messages.
-- Uploaded files depend on the Users
+- Uploaded files depend on the Users because without the users uploading there will be no files on out
+  database
+- The presence of a a conversation between two users are dependent on the users involved. Users who are not
+  the two main conersationalists in a conversation will not be able to access conversations.
 
 RELATIONSHIPS
 ----------------------------------------------------------------------------------------------------------
@@ -36,7 +52,8 @@ CONSTRAINTS
 
 SHOW ISA, MULTI-WAY RELATIONSHP, WEAK ENTITY SETS, ETC THAT APPLIES TO YOUR DESIGN
 ----------------------------------------------------------------------------------------------------------
-
+- multi-way relationship: There is a multiway relatiionship between department, course and listing. A listing
+  can only exist if there is a department, course and a listing post associated with it.
 
 
 EXPLANATION FOR EACH ENTITY SET AND RELATIONSHP, WRITE A SHORT DESCRITION DETAILING WHAT IT REPRESENTS OR MODELS.
