@@ -72,14 +72,20 @@ upload - refers to the files uploaded by users
 
 CONSTRAINTS
 ----------------------------------------------------------------------------------------------------------
-
-
+-password: must be at least 8 characters long
+-email: must contain @sjsu.edu
+-username: must be at least 3 character long and maximum 12 characters long
+-filename: must be a string
+-price: must only contain integers
+-profile picture: must have appropriate file type extension
 
 
 SHOW ISA, MULTI-WAY RELATIONSHP, WEAK ENTITY SETS, ETC THAT APPLIES TO YOUR DESIGN
 ----------------------------------------------------------------------------------------------------------
 - multi-way relationship: There is a multiway relatiionship between department, course and listing. A listing
   can only exist if there is a department, course and a listing post associated with it.
+- Role in a Relationsip: There is a role of User1 and User2 in the Talks to relation because two users need to be messaging each other in the conversation.
+
 
 
 EXPLANATION FOR EACH ENTITY SET AND RELATIONSHP, WRITE A SHORT DESCRITION DETAILING WHAT IT REPRESENTS OR MODELS.
