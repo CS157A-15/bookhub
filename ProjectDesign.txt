@@ -32,6 +32,26 @@ Conversations:
         in the conversation.
     - user2: PRIMARY KEY This is going to be using the primary key of one of the second users participating
         in the conversation.
+
+Message:
+    -date: PRIMARY KEY This is the date/time at which the message is sent
+    -sender: PRIMARY KEY This is the one of the user who sent the message
+    -content: This is the actual text of message that the user wants to send
+
+Uploaded Files:
+    -filename: PRIMARY KEY This is the name of the file that the user wants to upload and it needs to  have a unique name
+
+Listing:
+    -title: PRIMARY KEY This is going to be the title of the lsiting and the title can not be same for two listings.
+    price: the price of the book in the listing. This will be required
+   
+Courses:
+    -name: PRIMARY KEY This is the name of the course and two courses cannot have same name
+
+Department:
+    -name: PRIMARY KEY This is the name of the department and two departments cannot have same name
+
+
 DEPENDENCIES
 ----------------------------------------------------------------------------------------------------------
 - Finding the listing depends on the department and course that is associated with the listing.
@@ -43,6 +63,12 @@ DEPENDENCIES
 
 RELATIONSHIPS
 ----------------------------------------------------------------------------------------------------------
+has - this relation refers to the conversation list that users have with many users
+contains - refers to the conversation that each conversation list contains.
+Talks To - refers to the conversations between two users when they send messages to each other
+creates - refers to the listings that a user can create
+belongs to - refers to the department and course that the listing belongs to 
+upload - refers to the files uploaded by users
 
 CONSTRAINTS
 ----------------------------------------------------------------------------------------------------------
