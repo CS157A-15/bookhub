@@ -72,7 +72,7 @@ CONSTRAINTS
 -price: must only contain integers
 -profile picture: It must have appropriate file type extension. It will also has to be reference by a name 
     since storing it in the database is no best practice.
--For conversations betweensation between two users, only those two users will have access to the conversation.
+-For conversations between two users, only those two users will have access to the conversation.
 
 
 SHOW ISA, MULTI-WAY RELATIONSHP, WEAK ENTITY SETS, ETC THAT APPLIES TO YOUR DESIGN
