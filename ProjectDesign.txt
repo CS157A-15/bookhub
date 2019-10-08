@@ -7,22 +7,22 @@ ENTITIES
 ----------------------------------------------------------------------------------------------------------
 Conversation list - It is the entity that will store the conversations a user has with other users of the site.
 Conversation - This contains the messages between two users.
-Messages - The individual message that a user sents
-Users - The people are sign up to the use service.
-Uploaded files -  They are the file that are uploaded by the user to accompany their book listing(for quality assurance).
-Department - This has all the courses within each specific department.
-Courses - The courses available within SJSU
-Listing - A user-made post selling a book for certain course(s)
+Messages - The individual messages that a user sends.
+Users - The people that are signed up to use this service.
+Uploaded files -  They are the files that are uploaded by the user to accompany their book listing(for quality assurance).
+Department - This contains all the courses within each specific department.
+Courses - The courses available within SJSU.
+Listing - A user-made post of a book for sale for certain course(s).
 
 
 ATTRIBUTES
 ----------------------------------------------------------------------------------------------------------
 Users: 
     - email: PRIMARY KEY this is the email that user uses to create an account on our site
-    - profile picture: This is the user's profile picture. The website creates a default picture
+    - profile picture: This is the user's profile picture. The website creates a default profile picture
         for new accounts.
     - password: This is part of the login credentials for the user to access their account.
-    - username: This is an optional field. If there is no specified, it will default to their email.
+    - username: This is an optional field. If there is none specified, it will default to their email.
 
 ConversationList:
     - user: PRIMARY KEY This is going to be using the primary key of Users.
@@ -43,7 +43,7 @@ Uploaded Files:
 
 Listing:
     -title: PRIMARY KEY This is going to be the title of the lsiting and the title can not be same for two listings.
-    price: the price of the book in the listing. This will be required
+    -price: the price of the book in the listing. This will be required.
    
 Courses:
     -name: PRIMARY KEY This is the name of the course and two courses cannot have same name
@@ -58,7 +58,7 @@ DEPENDENCIES
 - The presence of conversations depends on the presence of messages.
 - Uploaded files depend on the Users because without the users uploading there will be no files on out
   database
-- The presence of a a conversation between two users are dependent on the users involved. Users who are not
+- The presence of a conversation between two users are dependent on the users involved. Users who are not
   the two main conersationalists in a conversation will not be able to access conversations.
 
 RELATIONSHIPS
