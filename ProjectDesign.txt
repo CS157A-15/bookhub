@@ -53,8 +53,6 @@ DEPENDENCIES
 - The presence of conversations depends on the presence of messages.
 - Uploaded files depend on the Users because without the users uploading there will be no files on out
   database
-- The presence of a conversation between two users are dependent on the users involved. Users who are not
-  the two main conersationalists in a conversation will not be able to access conversations.
 
 RELATIONSHIPS
 ----------------------------------------------------------------------------------------------------------
@@ -74,6 +72,7 @@ CONSTRAINTS
 -price: must only contain integers
 -profile picture: It must have appropriate file type extension. It will also has to be reference by a name 
     since storing it in the database is no best practice.
+-For conversations betweensation between two users, only those two users will have access to the conversation.
 
 
 SHOW ISA, MULTI-WAY RELATIONSHP, WEAK ENTITY SETS, ETC THAT APPLIES TO YOUR DESIGN
