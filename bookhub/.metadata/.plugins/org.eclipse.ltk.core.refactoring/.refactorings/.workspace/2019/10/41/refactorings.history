@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;three_tier&apos; to &apos;three_tier_bookhub&apos;" description="Rename resource &apos;three_tier&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="/three_tier" name="three_tier_bookhub" stamp="1570566843843" updateReferences="true"/>
+</session>

@@ -1,0 +1,88 @@
+SJSU Bookhub
+Team 15
+Project Design
+
+
+ENTITIES
+----------------------------------------------------------------------------------------------------------
+Conversation list - It is the entity that will store the conversations a user has with other users of the site.
+Conversation - This contains the messages between two users.
+Messages - The individual messages that a user sends.
+Users - The people that are signed up to use this service.
+Uploaded files -  They are the files that are uploaded by the user to accompany their book listing(for quality assurance).
+Department - This contains all the courses within each specific department.
+Courses - The courses available within SJSU.
+Listing - A user-made post of a book for sale for certain course(s).
+
+
+ATTRIBUTES
+----------------------------------------------------------------------------------------------------------
+Users: 
+    - email: PRIMARY KEY this is the email that user uses to create an account on our site
+    - profile picture: This is the user's profile picture. The website creates a default profile picture
+        for new accounts.
+    - password: This is part of the login credentials for the user to access their account.
+    - username: This is an optional field. If there is none specified, it will default to their email.
+
+Conversations:
+    - user2: PRIMARY KEY This is going to be using the primary key of one of the second users participating
+        in the conversation.
+
+Message:
+    -date: PRIMARY KEY This is the date/time at which the message is sent
+    -sender: PRIMARY KEY This is the one of the user who sent the message
+    -content: This is the actual text of message that the user wants to send
+
+Uploaded Files:
+    -filename: PRIMARY KEY This is the name of the file that the user wants to upload and it needs to  have a unique name
+
+Listing:
+    -title: PRIMARY KEY This is going to be the title of the lsiting and the title can not be same for two listings.
+    -price: the price of the book in the listing. This will be required.
+   
+Courses:
+    -name: PRIMARY KEY This is the name of the course and two courses cannot have same name
+
+Department:
+    -name: PRIMARY KEY This is the name of the department and two departments cannot have same name
+
+
+DEPENDENCIES
+----------------------------------------------------------------------------------------------------------
+- Finding the listing depends on the department and course that is associated with the listing.
+- The presence of conversations depends on the presence of messages.
+- Uploaded files depend on the Users because without the users uploading there will be no files on out
+  database
+
+RELATIONSHIPS
+----------------------------------------------------------------------------------------------------------
+has - this relation refers to the conversation list that users have with many users
+Talks To - refers to the conversations between two users when they send messages to each other
+Lists - refers to the listings that a user can create
+Listing - refers to the department and course that the listing belongs to 
+upload - refers to the files uploaded by users
+forms - messages create conversations. It is a mant to 1 relationship.
+
+CONSTRAINTS
+----------------------------------------------------------------------------------------------------------
+-password: must be at least 8 characters long
+-email: must contain @sjsu.edu
+-username: must be at least 3 character long and maximum 12 characters long
+-filename: must be a string
+-price: must only contain integers
+-profile picture: It must have appropriate file type extension. It will also has to be reference by a name 
+    since storing it in the database is no best practice.
+-For conversations between two users, only those two users will have access to the conversation.
+
+
+SHOW ISA, MULTI-WAY RELATIONSHP, WEAK ENTITY SETS, ETC THAT APPLIES TO YOUR DESIGN
+----------------------------------------------------------------------------------------------------------
+- multi-way relationship: There is a multiway relatiionship between department, course and listing. A listing
+  can only exist if there is a department, course and a listing post associated with it.
+- Role in a Relationsip: There is a role of User1 and User2 in the Talks to relation because two users need to be messaging each other in the conversation.
+
+
+
+EXPLANATION FOR EACH ENTITY SET AND RELATIONSHP, WRITE A SHORT DESCRITION DETAILING WHAT IT REPRESENTS OR MODELS.
+(ONE TO TWO SENTENCES PER ENTITY SET AND RELATIONSHIP) THIS IS TO HELP UNDERSTAND WHAT WE ARE MODELING
+----------------------------------------------------------------------------------------------------------
