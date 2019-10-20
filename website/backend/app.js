@@ -15,7 +15,7 @@ var app = express();
 const connection = mysql.createConnection({
   host: 'localhost',
   user:'root',
-  password: 'root',
+  password: '!Salmonfoodie22',
   database:'cs157a'
 });
 
@@ -24,7 +24,7 @@ connection.connect(function(err){
   console.log('******connection ******');
 });
 
-require('./route/html-routes')(app,connection);
+const querydata =  require('./routes/html-routes')(app,connection);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
