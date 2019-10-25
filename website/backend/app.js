@@ -22,9 +22,18 @@ const connection = mysql.createConnection({
 connection.connect(function(err){
   (err)? console.log(err + '++++++++++++++++////////'):
   console.log('******connection ******');
+  require('./routes/html-routes')(app,connection);
 });
 
-const querydata =  require('./routes/html-routes')(app,connection);
+//added the Access-Control-Allow-Origin
+app.all('/', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next()
+});
+//GET request
+require('./routes/html-routes')(app,connection);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -37,7 +46,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/emp', usersRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -52,7 +62,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  // res.render('error');
 });
 
 module.exports = app;

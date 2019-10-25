@@ -40,25 +40,29 @@ export default class App extends React.Component {
   }
 
   componentDidMount() {
-    this.getPeople();
-  }
-  getPeople = _ => {
     fetch('http://localhost:3001')
-    .then(response => console.log(response))
-    .then(({response}) => this.setState({people: 'response.people'}))
+    // .then(response => console.log(response))
+    // .then(({response}) => this.setState({people: 'emp'}))
+    .then(response => response.json())
+    .then(response =>{
+      const emp = response.users
+      this.setState({people: {emp}})
+      })
     .catch(error => console.log(error));
   }
 
-  showPeople = people => <div key={people.id}>{people.name}</div>
+  showPeople = p => <div key={p.id}>{p.name}</div>
   
 
   render() {
-    const { people } = this.state;
+    //console.log("peeps")
+    console.log(((this.state !== [])? this.state.people.map(this.showPeople): undefined))
+   // const peeps = this.state.people.response.users.map((p) => <div key={p.id}>{p.name}</div>);
     return (
  
       <div className= "App">
         <h1>testing</h1>
-        {people.map(this.showPeople)}
+   
       </div>
     );
   }
