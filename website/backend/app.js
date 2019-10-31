@@ -35,6 +35,19 @@ app.all('/', function(req, res, next) {
 //GET request
 require('./routes/html-routes')(app,connection);
 
+//POST request for the database?
+app.post('/users', function(req,res) {
+  var user = req.body;
+  var query = connection.query('INSERT INTO user SET ? ', user, function(err, reseult){
+
+  });
+  res.end("Success");
+})
+
+app.listen(3000, function(){
+  console.log("Example app listening on port 3000!");
+})
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -66,3 +79,4 @@ app.use(function(err, req, res, next) {
 });
 
 module.exports = app;
+,ju
