@@ -8,8 +8,10 @@ class Login extends Component {
   constructor(props){
     super(props);
     this.state = {
-        login: false,
         pass: '',
+        email: '',
+        username: '',
+        profile_pic_patch: '',
         validate: false,
         dbuser: [],
         user:{
@@ -22,7 +24,10 @@ class Login extends Component {
   render(){
     const {user} = this.state;
     if (this.state.validate) {
-      return <Redirect push to="/main" />;
+      return <Redirect to={{
+        pathname: '/main',
+        state: {email: this.state.email, username: this.state.username, profile_pic_patch: this.state.profile_pic_patch }
+      }} />;
     }
 
     return (
@@ -41,7 +46,7 @@ class Login extends Component {
               <input type="checkbox" value="remember-me"/> Remember me
             </label>
           </div>
-          <button className="btn btn-lg btn-primary btn-block" onClick={this.logIn} type="submit">Sign in</button>
+          <button className="btn btn-lg btn-primary btn-block" onClick={this.logIn} type="submit">Login in</button>
           <div className="mb-3">
             Need an account? &nbsp;
             <Link to="/signup">
@@ -54,32 +59,26 @@ class Login extends Component {
     );
   }
 
-  
-renderdb= (e) => {
-  if(e.email === this.state.user.email){
-   return(e.password);
-  }
-}
+  logIn = async _=>{
+    const {user, dbuser} = this.state;
+    await fetch(`http://localhost:4000/login?email=${user.email}`)
+    .then(res => res.json().then(res => this.setState({
+        dbuser: res.data
+      }, ()=> this.state.dbuser.map((p)=> (
+        this.setState({
+          email: p.email,
+          pass: p.password,
+          username: p.username,
+          profile_pic_patch: p.profile_pic_patch
+        })
+      ))
+      )))
+      
+      if(this.state.pass === this.state.user.password){
+        this.setState({validate: true});
+      }
+  } 
 
- getP(){
-   const {login,user,dbuser} = this.state;
-   console.log(this.state.user.email);
-   console.log(this.state.user.password);
-    return fetch(`http://localhost:4000/login?email=${user.email}`)
-    .then(res => res.json())
-    .then(res => this.setState({dbuser: res.data}))
-    .catch(err => console.error(err));
-}
-
-logIn =  _ => {
-  const {login, user, dbuser} = this.state;
-  this.getP();
-  console.log(dbuser);
-  console.log(dbuser.map(this.renderdb));
-  if(dbuser.map(this.renderdb) === this.state.user.password){
-    this.setState({validate: true});
-  }
-}
 }
 
 export default Login;
