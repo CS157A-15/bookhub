@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, useState} from 'react';
 import './main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link} from 'react-router-dom';
 import { Redirect } from 'react-router';
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol } from 'mdbreact';
-import Navbar from './navbar/navbar'
+import Navbar from './navbar/navbar';
+import CollapseButton from './../../component/CollapseButton.js'
+// import Collapse from 'react-bootstrap/Collapse';
+// import Button from 'react-bootstrap/Button';
 
 
 
@@ -53,48 +56,56 @@ class Main extends Component {
         </li>
     </div>
 
-    createLi = (dropdown, i) => <li id={dropdown[i].course_name}>{dropdown[i].course_name[0]} </li>
+    // CollapseButton = ({button_name, collapse_content}) => {
+    //     const [open, setOpen] = useState(false);
+    //     return (
+    //         <>
+    //             <Button 
+    //                 onClick ={() => setOpen(!open)}
+    //                 aria-controls="example-collapse-text"
+    //                 aria-expanded={open}
+    //             >{button_name}</Button>
+    //             <Collapse in={open}>
+    //                 <div id="example-collapse-text">
+    //                  hi {/* {collapse_content} */}
+    //                 </div>
+    //             </Collapse>
+    //         </>
+    //     );
+    // }
 
     renderDropdown = () => {
         let dropdown = this.state.dropdownlist;
-        console.log(this.state.dropdownlist)
         let dept = "blah";
-        let dropdown_div;
-        let ul_array = [];
+        let button_list = [];
         let li_array = [];
         if(dropdown.length > 0) {
             for(let i = 0; i < dropdown.length; i++){
                 console.log(dropdown[i].dept_name);
                 if(dropdown[i].dept_name !== dept){
                     //if not equal to dept name add classes of prev dep & set dept to current dept name
-                    //getting the previous ul and adding the list items to it before creating
-                    //another unordered list
+                    //getting the previous ul and adding the list items to it before creating another unordered list
                     dept = dropdown[i].dept_name;
                     li_array = [];
-                    li_array.push(<li id={dropdown[i].course_name}>{dropdown[i].course_name[0]} </li>);
-                    ul_array.push(li_array);
-                    console.log("ul_array");
-                    console.log(ul_array);
+                    li_array.push(<div><li id={dropdown[i].course_name} class={dept}> <a>{dropdown[i].course_name} </a></li> </div>);
+                    button_list.push(<CollapseButton button_name={dept} collapse_content={<ul class="list-unstyled components">{li_array}</ul>}/>)
+
                     
                         
                 } else { //if the dept name does not change. keep on adding classes under that name
-                    // console.log(this.createLi(dropdown,i));
-                    li_array.push(<li id={dropdown[i].course_name}>{dropdown[i].course_name[0]} </li>);
-                    // console.log("li_array");
-                    // console.log(li_array);
-                    
+                    li_array.push(<div><li id={dropdown[i].course_name} class={dept}><a>{dropdown[i].course_name} </a></li> </div>);                 
                 }
             }
-            dropdown_div = ul_array.map(x => <ul>{x}</ul>);
         }
 
-        console.log("dropdown_div" + dropdown_div)
-
         return (
-            <div>{dropdown_div}</div>
+            <div id="button_list">
+                {button_list}
+            </div>
         );
     }
 
+    
 
     
     renderBooks = ({list_id, title, edition, isbn, price,book_type,book_condition}) => 
@@ -117,6 +128,7 @@ class Main extends Component {
             </MDBCard>
             </MDBCol>
         </div>
+  
 
     render(){
         return (
@@ -133,11 +145,10 @@ class Main extends Component {
                 </ul>
                 <ul class="list-unstyled components">
                     <p>Categories</p>
-                    {this.state.depts.map(this.renderDepartments)}
-                </ul>
-                <ul>
+                    {/* {this.state.depts.map(this.renderDepartments)} */}
                     {this.renderDropdown()}
                 </ul>
+                
             </nav>
     
             {/* <!-- Page Content  --> */}

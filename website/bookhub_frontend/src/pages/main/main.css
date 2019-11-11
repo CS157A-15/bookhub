@@ -157,9 +157,17 @@ a.download {
 a.article,
 a.article:hover {
     background: #6d7fcc !important;
-    color: #fff !important;
+    /* color: #fff !important; */
 }
 
+#button_list Button {
+    width: 240px !important;
+    
+}
+
+#button_list {
+    align-items: center ;
+}
 /* ---------------------------------------------------
     CONTENT STYLE
 ----------------------------------------------------- */
