@@ -13,13 +13,16 @@ class Main extends Component {
         super(props);
         this.state = {
             books:[],
-            depts:[]
+            depts:[],
+            courses:[],
+            dropdownlist:[]
         }
     }
 
     componentDidMount(){
         this.getBooks();
         this.getDepartments();
+        this.getDropdownList();
       }
 
     getBooks = async _ => {
@@ -36,12 +39,61 @@ class Main extends Component {
         .catch(err => console.error(err))
     }
 
+    getDropdownList = async _ => {
+        await fetch('http://localhost:4000/dropdownlist')
+         .then(res => res.json())
+         .then(res => this.setState({dropdownlist: res.data}))
+         .catch(err => console.error(err))
+     }
+
     renderDepartments = ({dept_name, chair, building}) =>
     <div key = {dept_name}>
         <li>
             <a >{dept_name}</a>
         </li>
     </div>
+
+    createLi = (dropdown, i) => <li id={dropdown[i].course_name}>{dropdown[i].course_name[0]} </li>
+
+    renderDropdown = () => {
+        let dropdown = this.state.dropdownlist;
+        console.log(this.state.dropdownlist)
+        let dept = "blah";
+        let dropdown_div;
+        let ul_array = [];
+        let li_array = [];
+        if(dropdown.length > 0) {
+            for(let i = 0; i < dropdown.length; i++){
+                console.log(dropdown[i].dept_name);
+                if(dropdown[i].dept_name !== dept){
+                    //if not equal to dept name add classes of prev dep & set dept to current dept name
+                    //getting the previous ul and adding the list items to it before creating
+                    //another unordered list
+                    dept = dropdown[i].dept_name;
+                    li_array = [];
+                    li_array.push(<li id={dropdown[i].course_name}>{dropdown[i].course_name[0]} </li>);
+                    ul_array.push(li_array);
+                    console.log("ul_array");
+                    console.log(ul_array);
+                    
+                        
+                } else { //if the dept name does not change. keep on adding classes under that name
+                    // console.log(this.createLi(dropdown,i));
+                    li_array.push(<li id={dropdown[i].course_name}>{dropdown[i].course_name[0]} </li>);
+                    // console.log("li_array");
+                    // console.log(li_array);
+                    
+                }
+            }
+            dropdown_div = ul_array.map(x => <ul>{x}</ul>);
+        }
+
+        console.log("dropdown_div" + dropdown_div)
+
+        return (
+            <div>{dropdown_div}</div>
+        );
+    }
 
 
     
@@ -83,12 +135,15 @@ class Main extends Component {
                     <p>Categories</p>
                     {this.state.depts.map(this.renderDepartments)}
                 </ul>
+                <ul>
+                    {this.renderDropdown()}
+                </ul>
             </nav>
     
             {/* <!-- Page Content  --> */}
             <div id="content">
                <Navbar/>
-            <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1>
+            {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
             <div className="card-inline">
                 {this.state.books.map(this.renderBooks)}
             </div>

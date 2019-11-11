@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './login.css';
+import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link,Redirect} from 'react-router-dom';
 

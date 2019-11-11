@@ -10,7 +10,20 @@ class Sidebar extends Component {
     constructor(props){
         super(props);
         this.state = {
+            course:[],
+            departments: []
         }
+    }
+
+    getCourses = async _ => {
+        await fetch('http://localhost:4000/courses')
+        .then(res => res.json())
+        .then(res => this.setState({books: res.data}))
+        .catch(err => console.error(err))
+    }
+
+    getDepartments = async _ => {
+        await fetch('http://localhost:4000/department')
     }
 
     render(){

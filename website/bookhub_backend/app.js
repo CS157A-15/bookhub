@@ -7,7 +7,7 @@ const cors = require('cors')
 const db = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
-    password : 'Maninderpal51',
+    password : '!Salmonfoodie22', //'Maninderpal51',
     database : 'bookhub'
 });
 
@@ -53,6 +53,19 @@ app.get('/courses', (req, res) => {
 
 app.get('/department', (req, res) => {
     db.query('SELECT * FROM department', (err, results) =>{
+        if(err){
+            return res.send(err)
+        }
+        else {
+            return res.json({
+                data: results
+            })
+        }
+    });
+});
+
+app.get('/dropdownlist', (req, res) => {
+    db.query('SELECT department.dept_name, courses.course_name FROM courses NATURAL JOIN department', (err, results) =>{
         if(err){
             return res.send(err)
         }

@@ -28,6 +28,9 @@ render() {
             <MDBNavItem>
               <MDBNavLink to="#!">Profile</MDBNavLink>
             </MDBNavItem>
+            <MDBNavItem>
+              <MDBNavLink to="#!">Messages</MDBNavLink>
+            </MDBNavItem>
           </MDBNavbarNav>
           <MDBNavbarNav right>
             <MDBNavItem>
