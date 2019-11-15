@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { Component} from 'react';
 import './main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
@@ -13,6 +13,7 @@ import {
 import Navbar from './navbar/navbar';
 import CollapseButton from './../../component/CollapseButton.js';
 
+let books = [];
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -23,9 +24,10 @@ class Main extends Component {
       dropdownlist: [],
       query_dept: undefined,
       query_course: undefined,
-      searchInput: ''
+      searchInput: undefined
     };
   }
+
 
   componentDidMount() {
     this.getBooks();
@@ -36,7 +38,10 @@ class Main extends Component {
   getBooks = () => {
     fetch('http://localhost:4000/books')
       .then(res => res.json())
-      .then(res => this.setState({ books: res.data }))
+      .then(res => {
+        this.setState({ books: res.data });
+        books = res.data;
+      })
       .catch(err => console.error(err));
   };
 
@@ -59,20 +64,25 @@ class Main extends Component {
       `http://localhost:4000/requestedBooksByDeptByCourse?dept=${dept}&course=${course}`
     )
       .then(res => res.json())
-      .then(res => this.setState({ books: res.data }));
+      .then(res => {
+        this.setState({ books: res.data });
+        books = res.data;
+      })
+      .catch(err => console.error(err));
   };
 
   getRequestedBooksDept = async query_dept => {
     fetch(`http://localhost:4000/requestedBooksByDept?dept=${query_dept}`)
       .then(res => res.json())
-      .then(res => this.setState({ books: res.data }))
+      .then(res => {
+        this.setState({ books: res.data });
+        books = res.data;
+      })
       .catch(err => console.error(err));
   };
 
   getSearchResults = async SQLParam => {
-    console.log("in get search results");
     let q = `http://localhost:4000/searchResults?searchInput=${SQLParam}`;
-    console.log("q");
     console.log(q);
     fetch(
       `http://localhost:4000/searchResults?searchInput=${SQLParam}`
@@ -80,7 +90,7 @@ class Main extends Component {
       .then(res => res.json())
       .then(res => {
         this.setState({ books: res.data });
-        console.log(this.state.books);
+        books = res.data;
       })
       .catch(err => console.error(err));
 
@@ -97,28 +107,26 @@ class Main extends Component {
     console.log('enterPressed from main');
 
     var code = event.keyCode || event.which;
-    let SQLParam;
     if (code === 13) {
       //13 is the enter keycode
-      // console.log(this.state.searchInput);
-      // console.log("the books");
-      // console.log(this.state.books);
       event.preventDefault();
+      
       let searchWords = this.state.searchInput.trim().split(' ');
       console.log(searchWords);
-      SQLParam = this.generateSQLSearchParam(searchWords);
+      this.getSearchResults(this.generateSQLSearchParam(searchWords));
     }
-    this.getSearchResults(SQLParam);
+    
   };
 
   //----------------- Generate where condition for the query ---------------------------------
   generateSQLSearchParam(searchWords) {
-    let SQLSearchParam = '';
+    let SQLSearchParam ='';
     for (let i = 0; i < searchWords.length; i++) {
+      console.log(searchWords[i]);
       if (i === 0) {
-        SQLSearchParam += 'title LIKE '%s' + searchWords[i] + '%' ';
+        SQLSearchParam += `${searchWords[i]}`;
       } else {
-        SQLSearchParam += "OR title LIKE '%" + searchWords[i] + "%' ";
+        SQLSearchParam += `OR title LIKE '%${searchWords[i]}%' `;
       }
     }
 
@@ -157,7 +165,6 @@ class Main extends Component {
           li_array.push(
             <div id={dept} onClick={e => this.getBooksByDept(e)}>
               <li>
-                {' '}
                 <a>ALL </a>
               </li>
             </div>
@@ -169,7 +176,6 @@ class Main extends Component {
               onClick={e => this.getBooksByCourse(e)}
             >
               <li>
-                {' '}
                 <a>{dropdown[i].course_name} </a>
               </li>
             </div>

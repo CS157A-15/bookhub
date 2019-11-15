@@ -89,8 +89,17 @@ app.get('/listedBooks', (req, res) => {
 
 app.get('/searchResults', (req, res) => {
   const { searchInput } = req.query;
+  // let SQLSearchParam =``;
+  // for (let i = 0; i < searchInput.length; i++) {
+  //   console.log(searchInput[i]);
+  //   if (i === 0) {
+  //     SQLSearchParam += `${searchInput[i]}`;
+  //   } else {
+  //     SQLSearchParam += `OR title LIKE '%${searchInput[i]}%' `;
+  //   }
+  // }
   db.query(
-    `SELECT * FROM usefor NATURAL JOIN listedbooks WHERE '${searchInput}'`,
+    `SELECT * FROM usefor NATURAL JOIN listedbooks WHERE title LIKE '%${searchInput}%'`,
     (err, results) => {
       if (err) {
         return res.send(err);
