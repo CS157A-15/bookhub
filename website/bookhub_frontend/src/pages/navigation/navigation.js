@@ -4,6 +4,7 @@ import './navigation.css';
 import Login from '../login/login';
 import Signup from '../signup/signup'
 import Main from '../main/main'
+import Messages from '../messages/messages'
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 class Navigation extends Component {
@@ -15,6 +16,7 @@ class Navigation extends Component {
                     <Route path = "/" exact component = {Login}/>
                     <Route path = "/signup" component = {Signup}/>
                     <Route path = "/main" component = {Main}/>
+                    <Route path = "/messages" component = {Messages}/> 
                 </Switch>
             </Router>
         );

@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import './login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link,Redirect} from 'react-router-dom';
+import UserAuth from '../../user_auth';
+
+
 
 class Login extends Component {
 
@@ -11,7 +14,7 @@ class Login extends Component {
         pass: '',
         email: '',
         username: '',
-        profile_pic_patch: '',
+        profile_pic_path: '',
         validate: false,
         dbuser: [],
         user:{
@@ -25,7 +28,7 @@ class Login extends Component {
     const {user} = this.state;
     if (this.state.validate) {
       return <Redirect to={{
-        pathname: '/main',
+        pathname: '/messages',
         state: {email: this.state.email, username: this.state.username, profile_pic_patch: this.state.profile_pic_patch }
       }} />;
     }
@@ -46,7 +49,7 @@ class Login extends Component {
               <input type="checkbox" value="remember-me"/> Remember me
             </label>
           </div>
-          <button className="btn btn-lg btn-primary btn-block" onClick={this.logIn} type="submit">Login in</button>
+          <button className="btn btn-lg btn-primary btn-block" onClick={this.logIn} type="submit">Log in</button>
           <div className="mb-3">
             Need an account? &nbsp;
             <Link to="/signup">
@@ -66,15 +69,18 @@ class Login extends Component {
         dbuser: res.data
       }, ()=> this.state.dbuser.map((p)=> (
         this.setState({
+          username: p.username,
           email: p.email,
           pass: p.password,
-          username: p.username,
-          profile_pic_patch: p.profile_pic_patch
+          profile_pic_path: p.profile_pic_path
         })
       ))
       )))
       
       if(this.state.pass === this.state.user.password){
+        UserAuth.setUsername(this.state.username);
+        UserAuth.setEmail(this.state.email);
+        UserAuth.setAuth(true);
         this.setState({validate: true});
       }
   } 

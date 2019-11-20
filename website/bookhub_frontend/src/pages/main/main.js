@@ -4,7 +4,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link} from 'react-router-dom';
 import { Redirect } from 'react-router';
 import { MDBBtn, MDBCard, MDBCardBody, MDBCardImage, MDBCardTitle, MDBCardText, MDBCol } from 'mdbreact';
-import Navbar from './navbar/navbar'
+import Navbar from '../navbar/navbar'
+import UserAuth from '../../user_auth';
 
 
 
@@ -88,7 +89,7 @@ class Main extends Component {
             {/* <!-- Page Content  --> */}
             <div id="content">
                <Navbar/>
-            <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1>
+            <h1> Welcome to SJSU Bookhub, {UserAuth.getUsername()} </h1>
             <div className="card-inline">
                 {this.state.books.map(this.renderBooks)}
             </div>
