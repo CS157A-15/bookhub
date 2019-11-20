@@ -1,4 +1,4 @@
-import React, { Component} from 'react';
+import React, { Component } from 'react';
 import './main.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {
@@ -12,6 +12,8 @@ import {
 } from 'mdbreact';
 import Navbar from './navbar/navbar';
 import CollapseButton from './../../component/CollapseButton.js';
+import CarouselItem from '../../component/Carousel.js';
+import axios, { post } from 'axios';
 
 let books = [];
 class Main extends Component {
@@ -94,7 +96,7 @@ class Main extends Component {
       })
       .catch(err => console.error(err));
 
-      
+
   };
 
   //----------------------------------- Handeling the serach ---------------------------------
@@ -110,17 +112,17 @@ class Main extends Component {
     if (code === 13) {
       //13 is the enter keycode
       event.preventDefault();
-      
+
       let searchWords = this.state.searchInput.trim().split(' ');
       console.log(searchWords);
       this.getSearchResults(this.generateSQLSearchParam(searchWords));
     }
-    
+
   };
 
   //----------------- Generate where condition for the query ---------------------------------
   generateSQLSearchParam(searchWords) {
-    let SQLSearchParam ='';
+    let SQLSearchParam = '';
     for (let i = 0; i < searchWords.length; i++) {
       console.log(searchWords[i]);
       if (i === 0) {
@@ -220,33 +222,65 @@ class Main extends Component {
     book_type,
     book_condition
   }) => (
-    <div className="card-inline" key={list_id}>
-      <MDBCol>
-        <MDBCard style={{ width: '17rem' }}>
-          <MDBCardImage
+      <div className="card-inline" key={list_id}>
+        <MDBCol>
+          <MDBCard style={{ width: '17rem' }}>
+            {/* <MDBCardImage
             className="img-fluid"
             src="https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"
             waves
-          />
-          <MDBCardBody>
-            <MDBCardTitle>{title}</MDBCardTitle>
-            <MDBCardText>
-              Edition: {edition}, ISBN: {isbn}
-            </MDBCardText>
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item"> Book Type: {book_type}</li>
-              <li className="list-group-item">
-                {' '}
-                Book Condition: {book_condition}
-              </li>
-              <li className="list-group-item"> Price: ${price}</li>
-            </ul>
-            <MDBBtn className="btn btn-primary">Contact</MDBBtn>
-          </MDBCardBody>
-        </MDBCard>
-      </MDBCol>
-    </div>
-  );
+          /> */}
+            <MDBCardBody>
+              <MDBCardTitle>{title}</MDBCardTitle>
+              <MDBCardText>
+                Edition: {edition}, ISBN: {isbn}
+              </MDBCardText>
+              <ul className="list-group list-group-flush">
+                <li className="list-group-item">
+                  {' '}
+                  Book Condition: {book_condition}
+                </li>
+                <li className="list-group-item"> Price: ${price}</li>
+              </ul>
+              <MDBBtn className="btn btn-primary">Contact</MDBBtn>
+            </MDBCardBody>
+          </MDBCard>
+        </MDBCol>
+      </div>
+    );
+  //----------------------- Handling the file upload-------------------------------------
+  handleImageChange = async (e) =>{
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let files = e.target.files;
+
+    // let object = new ActiveXObject("Scripting.FileSystemObject");
+
+    // reader.onloadend = () => {
+    //   this.setState({
+    //     file: file,
+    //     imagePreviewUrl: reader.result
+    //   })
+    // }
+
+    // reader.readAsDataURL(files[0]);
+    // reader.onload = (e) => {
+    //   const url =  "http://localhost:4000/upload";
+    //   const formData = { file: e.target.result}
+    //   return post(url, formData)
+    //     .then(response => console.warn("result", response));
+    // }
+
+    // fetch(`http://localhost:4000/upload`)
+    //   .then(res =>{ console.log("inside upload call frontend")});
+
+
+  }
+
+  uploadHandler = () => { }
+  //----------------------- Handling the file download after upload -------------------------------------
+
 
   render() {
     return (
@@ -264,28 +298,36 @@ class Main extends Component {
           </div>
           <ul className="list-unstyled CTAs">
             <li>
-              <button type="button" className="btn btn-light">
+              {/* <button type="button" className="btn btn-light">
                 Add Book
-              </button>
+              </button> */}
+              {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
+              {/* <button onClick={this.uploadHandler}><input className="fileInput" type="file" onChange = {(e) => this.handleImageChange(e)}/></button> */}
+              <form  action="/upload" method="POST" enctype="multipart/form-data">
+                <input type="file" name="file"/>
+                <input type="submit" value="Submit"/>
+                <img src="/image.png" />
+              </form>
             </li>
           </ul>
-          <ul className="list-unstyled components">
-            <p>Categories</p>
-            {this.renderDropdown()}
-          </ul>
+              <ul className="list-unstyled components">
+                <p>Categories</p>
+                {this.renderDropdown()}
+              </ul>
         </nav>
 
-        {/* <!-- Page Content  --> */}
-        <div id="content">
-          <Navbar handleSearch={this.handleSearch}  enterPressed={this.enterPressed}/>
-          {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
-          <div className="card-inline">
-            {this.state.books.map(this.renderBooks)}
-          </div>
-        </div>
+            {/* <!-- Page Content  --> */}
+            <div id="content">
+              <Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} />
+              {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
+              <div className="card-inline">
+                {this.state.books.map(this.renderBooks)}
+                {/* {<CarouselItem imgs={array}></CarouselItem>} */}
+              </div>
+            </div>
       </div>
-    );
-  }
-}
-
-export default Main;
+          );
+        }
+      }
+      
+      export default Main;

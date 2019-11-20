@@ -2,6 +2,8 @@ const express = require('express');
 const mysql = require('mysql');
 const app = express();
 const cors = require('cors');
+const multer = require("multer");
+const path = require("path");
 
 // Create connection
 const db = mysql.createConnection({
@@ -23,6 +25,8 @@ app.use(cors());
 app.get('/', (req, res) => {
   res.send('go to /books to see books');
 });
+
+app.get("/", express.static(path.join(__dirname, "./public")));
 
 app.get('/books', (req, res) => {
   db.query('SELECT * FROM BOOKS', (err, results) => {
@@ -170,6 +174,77 @@ app.get('/login', (req, res) => {
       });
     }
   });
+});
+
+
+// handling the file upload
+// app.post('/upload', (req, res) => {
+//   // create an incoming form object
+//   let form = new formidable.IncomingForm();
+
+//   // specify that we want to allow the user to upload multiple files in a single request
+//   form.multiples = true;
+
+//   // store all uploads in the /uploads directory
+//   form.uploadDir = path.join(__dirname, '../../../uploads');
+
+//   // every time a file has been uploaded successfully,
+//   // rename it to it's orignal name
+//   form.on('file', function(field, file) {
+//     logger.info(`Uploaded: "${file.name}"`);
+//     fs.rename(file.path, path.join(form.uploadDir, file.name));
+//   });
+
+//   // log any errors that occur
+//   form.on('error', function(err) {
+//     errorLogger.error('During file upload: ' + err);
+//   });
+
+//   // once all the files have been uploaded, send a response to the client
+//   form.on('end', function() {
+//     res.end('success');
+//   });
+
+//   // parse the incoming request containing the form data
+//   form.parse(req);
+// });
+
+const upload = multer({
+  dest: "C:/Users/xinru/Documents/bookhub/website"
+  // you might also want toset some limits: https://github.com/expressjs/multer#limits
+});
+
+app.post(
+  "/upload",
+  upload.single("file" /* name attribute of <file> element in your form */),
+  (req, res) => {
+    const tempPath = req.file.path;
+    const targetPath = path.join(__dirname, "./../uploads/image.png");
+
+    if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+      fs.rename(tempPath, targetPath, err => {
+        if (err) return handleError(err, res);
+
+        res
+          .status(200)
+          .contentType("text/plain")
+          .end("File uploaded!");
+      });
+    } else {
+      fs.unlink(tempPath, err => {
+        if (err) return handleError(err, res);
+
+        res
+          .status(403)
+          .contentType("text/plain")
+          .end("Only .png files are allowed!");
+      });
+    }
+  }
+);
+
+app.get("/image.png", (req, res) => {
+  res.sendFile(path.join(__dirname, "./uploads/image.png"));
 });
 
 app.listen('4000', () => {
