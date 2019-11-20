@@ -1,31 +1,29 @@
 import React, { Component } from 'react';
-import './login.css';
+import './Login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link,Redirect} from 'react-router-dom';
 import UserAuth from '../../user_auth';
 
-
-
 class Login extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
     this.state = {
-        pass: '',
-        email: '',
-        username: '',
-        profile_pic_path: '',
-        validate: false,
-        dbuser: [],
-        user:{
-            email: '',
-            password: ''
+      pass: '',
+      email: '',
+      username: '',
+      profile_pic_patch: '',
+      validate: false,
+      dbuser: [],
+      user: {
+          email: '',
+          password: ''
         }   
      }
   } 
 
-  render(){
-    const {user} = this.state;
+
+  render() {
+    const { user } = this.state;
     if (this.state.validate) {
       return <Redirect to={{
         pathname: '/messages',
@@ -35,26 +33,51 @@ class Login extends Component {
 
     return (
       <div>
-        <div className = "logo rounded mx-auto d-block">
-            <img width="200" height="200" src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ec/San_Jose_State_Spartans_logo.svg/378px-San_Jose_State_Spartans_logo.svg.png"
-            alt = "SJSU SAMMY"/>
-        <p className="h3 mb-3 text-center font-weight-bold">SJSU Bookhub</p>
+        <div className="logo rounded mx-auto d-block">
+          <img
+            width="200"
+            height="200"
+            src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ec/San_Jose_State_Spartans_logo.svg/378px-San_Jose_State_Spartans_logo.svg.png"
+            alt="SJSU SAMMY"
+          />
+          <p className="h3 mb-3 text-center font-weight-bold">SJSU Bookhub</p>
           <h1 className="text-center h4 mb-3 font-weight-normal">Sign In</h1>
-          <label htmlFor="inputEmail" className="sr-only">Email address</label>
-          <input type="email" id="inputEmail" className="form-control"  onChange={e =>this.setState({user:{...user,email: e.target.value}})}  placeholder="Email address" required autoFocus></input>
-          <label htmlFor="inputPassword" className="sr-only">Password</label>
-          <input type="password" id="inputPassword" className="form-control" onChange={e =>this.setState({user:{...user,password: e.target.value}})} placeholder="Password" required></input>
+          <label htmlFor="inputEmail" className="sr-only">
+            Email address
+          </label>
+          <input
+            type="email"
+            id="inputEmail"
+            className="form-control"
+            onChange={e =>
+              this.setState({ user: { ...user, email: e.target.value } })
+            }
+            placeholder="Email address"
+            required
+            autoFocus
+          ></input>
+          <label htmlFor="inputPassword" className="sr-only">
+            Password
+          </label>
+          <input
+            type="password"
+            id="inputPassword"
+            className="form-control"
+            onChange={e =>
+              this.setState({ user: { ...user, password: e.target.value } })
+            }
+            placeholder="Password"
+            required
+          ></input>
           <div className="checkbox mb-3">
             <label>
-              <input type="checkbox" value="remember-me"/> Remember me
+              <input type="checkbox" value="remember-me" /> Remember me
             </label>
           </div>
           <button className="btn btn-lg btn-primary btn-block" onClick={this.logIn} type="submit">Log in</button>
           <div className="mb-3">
             Need an account? &nbsp;
-            <Link to="/signup">
-               Sign up
-            </Link>
+            <Link to="/signup">Sign up</Link>
           </div>
           <p className="mt-5 mb-3 text-muted">&copy; SJSU 2019</p>
         </div>
@@ -83,8 +106,7 @@ class Login extends Component {
         UserAuth.setAuth(true);
         this.setState({validate: true});
       }
-  } 
-
+  };
 }
 
 export default Login;

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import './navigation.css';
 import Login from '../login/login';
 import Signup from '../signup/signup'
@@ -21,5 +21,6 @@ class Navigation extends Component {
             </Router>
         );
     }
+
 }
 export default Navigation;
