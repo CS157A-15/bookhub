@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import Navigation from './pages/navigation/navigation.js'
+import Navigation from './pages/navigation/navigation.js';
 import * as serviceWorker from './serviceWorker';
 import '@fortawesome/fontawesome-free/css/all.min.css';
 import 'bootstrap-css-only/css/bootstrap.min.css';

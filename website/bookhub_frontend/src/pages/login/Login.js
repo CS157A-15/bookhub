@@ -1,40 +1,34 @@
-import React, { Component } from "react";
-import "./Login.css";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Link, Redirect } from "react-router-dom";
+import React, { Component } from 'react';
+import './Login.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import {Link,Redirect} from 'react-router-dom';
+import UserAuth from '../../user_auth';
 
 class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pass: "",
-      email: "",
-      username: "",
-      profile_pic_patch: "",
+      pass: '',
+      email: '',
+      username: '',
+      profile_pic_patch: '',
       validate: false,
       dbuser: [],
       user: {
-        email: "",
-        password: ""
-      }
-    };
-  }
+          email: '',
+          password: ''
+        }   
+     }
+  } 
+
 
   render() {
     const { user } = this.state;
     if (this.state.validate) {
-      return (
-        <Redirect
-          to={{
-            pathname: "/main",
-            state: {
-              email: this.state.email,
-              username: this.state.username,
-              profile_pic_patch: this.state.profile_pic_patch
-            }
-          }}
-        />
-      );
+      return <Redirect to={{
+        pathname: '/messages',
+        state: {email: this.state.email, username: this.state.username, profile_pic_patch: this.state.profile_pic_patch }
+      }} />;
     }
 
     return (
@@ -80,13 +74,7 @@ class Login extends Component {
               <input type="checkbox" value="remember-me" /> Remember me
             </label>
           </div>
-          <button
-            className="btn btn-lg btn-primary btn-block"
-            onClick={this.logIn}
-            type="submit"
-          >
-            Login in
-          </button>
+          <button className="btn btn-lg btn-primary btn-block" onClick={this.logIn} type="submit">Log in</button>
           <div className="mb-3">
             Need an account? &nbsp;
             <Link to="/signup">Sign up</Link>
@@ -97,30 +85,27 @@ class Login extends Component {
     );
   }
 
-  logIn = async _ => {
-    const { user, dbuser } = this.state;
-    await fetch(`http://localhost:4000/login?email=${user.email}`).then(res =>
-      res.json().then(res =>
-        this.setState(
-          {
-            dbuser: res.data
-          },
-          () =>
-            this.state.dbuser.map(p =>
-              this.setState({
-                email: p.email,
-                pass: p.password,
-                username: p.username,
-                profile_pic_patch: p.profile_pic_patch
-              })
-            )
-        )
-      )
-    );
-
-    if (this.state.pass === this.state.user.password) {
-      this.setState({ validate: true });
-    }
+  logIn = async _=>{
+    const {user, dbuser} = this.state;
+    await fetch(`http://localhost:4000/login?email=${user.email}`)
+    .then(res => res.json().then(res => this.setState({
+        dbuser: res.data
+      }, ()=> this.state.dbuser.map((p)=> (
+        this.setState({
+          username: p.username,
+          email: p.email,
+          pass: p.password,
+          profile_pic_path: p.profile_pic_path
+        })
+      ))
+      )))
+      
+      if(this.state.pass === this.state.user.password){
+        UserAuth.setUsername(this.state.username);
+        UserAuth.setEmail(this.state.email);
+        UserAuth.setAuth(true);
+        this.setState({validate: true});
+      }
   };
 }
 

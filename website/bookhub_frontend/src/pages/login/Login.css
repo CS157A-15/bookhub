@@ -17,11 +17,11 @@
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
- }
+}
 
- .bg {
+.bg {
   /* The image used */
-  background-image: url("https://cpb-us-w2.wpmucdn.com/blogs.sjsu.edu/dist/f/94/files/2015/09/Schmitz_GeneralCampus_7631_1_02-rprer4.jpg");
+  background-image: url('https://cpb-us-w2.wpmucdn.com/blogs.sjsu.edu/dist/f/94/files/2015/09/Schmitz_GeneralCampus_7631_1_02-rprer4.jpg');
 
   /* Full height */
   height: 100%;
