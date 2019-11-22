@@ -1,5 +1,5 @@
-const express = require('express');
-const mysql = require('mysql');
+const express = require("express");
+const mysql = require("mysql");
 const app = express();
 const cors = require('cors');
 const multer = require("multer");
@@ -61,6 +61,25 @@ app.get('/department', (req, res) => {
         data: results
       });
     }
+  });
+});
+
+app.get("/userListings", (req, res) => {
+  const { email } = req.query;
+  db.query(
+    `SELECT * FROM List NATURAL JOIN ListedBooks WHERE email = '${email}'`,
+    (err, result) => {
+      if (err) throw err;
+      res.send(result);
+    }
+  );
+});
+
+app.get("/profile", (req, res) => {
+  const { email } = req.query;
+  db.query(`SELECT * FROM users WHERE email = '${email}'`, (err, result) => {
+    if (err) throw err;
+    res.send(result);
   });
 });
 
