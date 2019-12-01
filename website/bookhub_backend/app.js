@@ -179,6 +179,23 @@ app.get('/login', (req, res) => {
 });
 
 
+app.get('/addListing', (req, res) => {
+  const { bookName, bookEdition, bookISBN, bookPrice, bookType, bookCondition } = req.query;
+  console.log("in book listing", bookName, bookEdition, bookISBN, bookPrice, bookType, bookCondition);
+  const INSERT_USER_QUERY = `INSERT INTO listedbooks(title, edition, isbn, price, book_type, book_condition) 
+	VALUES ('${bookName}','${bookEdition}','${bookISBN}','${bookPrice}', '${bookType}', '${bookCondition}')`;
+  db.query(INSERT_USER_QUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
+    }
+    console.log("successfully added book to listing");
+  });
+});
+
 // handling the file upload
 // app.post('/upload', (req, res) => {
 //   // create an incoming form object
@@ -219,6 +236,7 @@ app.get('/login', (req, res) => {
 app.get('/upload', (req, res) => {
   
   let { fileData, fileName } = req.query;
+  // fileData = Buffer.from(fileData, '').toString('base64');
   console.warn("in backend upload", fileData);
   // fileData =  fileData[0].replace(/^data:image\/png;base64,/, "");
   // fileData = fileData.replace(/(\r\n|\n|\r)/gm, "");
@@ -242,7 +260,7 @@ app.get('/upload', (req, res) => {
   //   // });
   // });
 
-  fs.writeFile('../uploads/test.txt', fileData, function(err) { 
+  fs.writeFile('../uploads/test1.png', fileData, function(err) { 
     if (err) 
         return console.error(err); 
   });

@@ -12,10 +12,11 @@ import {
 } from 'mdbreact';
 import Navbar from './navbar/navbar';
 import CollapseButton from './../../component/CollapseButton.js';
+import Upload from './../../component/UploadBox.js';
 import CarouselItem from '../../component/Carousel.js';
 import axios, { post } from 'axios';
 import FileSaver from 'file-saver';
-import fs from 'fs';
+
 
 let books = [];
 class Main extends Component {
@@ -261,7 +262,7 @@ class Main extends Component {
 
     let reader = new FileReader();
     let files = e.target.files;
-    let base64;
+    let base64 ="";
     reader.readAsDataURL(files[0]);
 
     // let blob = this.b64toBlob(files);
@@ -273,9 +274,9 @@ class Main extends Component {
       //   file: file,
       //   imagePreviewUrl: reader.result
       // })'
-      console.log("in here");
+  
       base64 = reader.result;
-      console.log(typeof base64);
+
       console.log(base64);
       
       // const imageBuffer = this.decodeBase64Image(base64);
@@ -284,7 +285,8 @@ class Main extends Component {
       let base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
       console.log(base64Data);
 
-      const buf = new Buffer(base64Data, 'base64');
+      const buf = Buffer.from(base64Data).toString('base64');
+      console.log("buf", buf);
 
       this.uploadFiles("name", buf); //sending the data to the backend
       
@@ -323,9 +325,10 @@ class Main extends Component {
     }
   
     response.type = matches[1];
+    
+    response.data = Buffer.from(matches[2]).toString('base64');
     console.log("matches[2]",matches[2] );
-    response.data = new Buffer(matches[2], 'base64');
-  
+
     return response;
   }
 
@@ -393,6 +396,7 @@ class Main extends Component {
               </button> */}
               {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
               <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => this.handleImageChange(e)} />
+              <Upload/>
               {/* <form action="/upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="file"/>
                 <input type="submit" value="Submit"/>
