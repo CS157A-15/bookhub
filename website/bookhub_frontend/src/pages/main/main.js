@@ -14,6 +14,8 @@ import Navbar from './navbar/navbar';
 import CollapseButton from './../../component/CollapseButton.js';
 import CarouselItem from '../../component/Carousel.js';
 import axios, { post } from 'axios';
+import FileSaver from 'file-saver';
+import fs from 'fs';
 
 let books = [];
 class Main extends Component {
@@ -97,6 +99,11 @@ class Main extends Component {
       .catch(err => console.error(err));
 
 
+  };
+
+  uploadFiles = async(fileName, fileData) => {
+    fetch(`http://localhost:4000/upload?fileData=${fileData}&fileName=${fileName}`,  {mode: 'no-cors'})
+      .catch(err => console.error(err));
   };
 
   //----------------------------------- Handeling the serach ---------------------------------
@@ -249,22 +256,50 @@ class Main extends Component {
       </div>
     );
   //----------------------- Handling the file upload-------------------------------------
-  handleImageChange = async (e) =>{
+  handleImageChange = async (e) => {
     e.preventDefault();
 
     let reader = new FileReader();
     let files = e.target.files;
+    let base64;
+    reader.readAsDataURL(files[0]);
 
+    // let blob = this.b64toBlob(files);
+    // FileSaver.saveAs(blob, "image.png");
     // let object = new ActiveXObject("Scripting.FileSystemObject");
 
-    // reader.onloadend = () => {
-    //   this.setState({
-    //     file: file,
-    //     imagePreviewUrl: reader.result
-    //   })
-    // }
+    reader.onloadend = () => {
+      // this.setState({
+      //   file: file,
+      //   imagePreviewUrl: reader.result
+      // })'
+      console.log("in here");
+      base64 = reader.result;
+      console.log(typeof base64);
+      console.log(base64);
+      
+      // const imageBuffer = this.decodeBase64Image(base64);
+      // console.log("image buffer ", imageBuffer);
+      
+      let base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+      console.log(base64Data);
 
-    // reader.readAsDataURL(files[0]);
+      const buf = new Buffer(base64Data, 'base64');
+
+      this.uploadFiles("name", buf); //sending the data to the backend
+      
+      // let base64Image = base64.split(';base64,').pop();
+      // fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function (err) {
+      //   console.log('File created');
+      // });
+    }
+
+    // let base64Image = base64.split(';base64,').pop();
+    // fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function (err) {
+    //   console.log('File created');
+    // });
+
+
     // reader.onload = (e) => {
     //   const url =  "http://localhost:4000/upload";
     //   const formData = { file: e.target.result}
@@ -276,6 +311,61 @@ class Main extends Component {
     //   .then(res =>{ console.log("inside upload call frontend")});
 
 
+  }
+
+  //https://stackoverflow.com/questions/20267939/nodejs-write-base64-image-file
+  decodeBase64Image(dataString) {
+    var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
+      response = {};
+  
+    if (matches.length !== 3) {
+      return new Error('Invalid input string');
+    }
+  
+    response.type = matches[1];
+    console.log("matches[2]",matches[2] );
+    response.data = new Buffer(matches[2], 'base64');
+  
+    return response;
+  }
+
+  //https://stackoverflow.com/questions/27980612/converting-base64-to-blob-in-javascript
+  b64toBlob(dataURI) {
+
+    // let byteString = atob(dataURI.split(',')[1]);
+    // let ab = new ArrayBuffer(byteString.length);
+    // let ia = new Uint8Array(ab);
+    let imgType = 'image/jpeg';
+    const sliceSize = 512;
+
+    // for (let i = 0; i < byteString.length; i++) {
+    //     ia[i] = byteString.charCodeAt(i);
+    // }
+
+
+    const byteCharacters = atob(dataURI);
+    const byteArrays = [];
+
+    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+      const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+      const byteNumbers = new Array(slice.length);
+      for (let i = 0; i < slice.length; i++) {
+        byteNumbers[i] = slice.charCodeAt(i);
+      }
+
+      const byteArray = new Uint8Array(byteNumbers);
+
+      byteArrays.push(byteArray);
+    }
+
+    if (dataURI.contains("jpeg")) {
+      imgType = 'image/jpeg';
+    } else if (dataURI.contains("png")) {
+      imgType = 'image/png';
+    }
+
+    return new Blob(byteArrays, { type: imgType });
   }
 
   uploadHandler = () => { }
@@ -302,32 +392,32 @@ class Main extends Component {
                 Add Book
               </button> */}
               {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
-              {/* <button onClick={this.uploadHandler}><input className="fileInput" type="file" onChange = {(e) => this.handleImageChange(e)}/></button> */}
-              <form  action="/upload" method="POST" enctype="multipart/form-data">
+              <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => this.handleImageChange(e)} />
+              {/* <form action="/upload" method="POST" enctype="multipart/form-data">
                 <input type="file" name="file"/>
                 <input type="submit" value="Submit"/>
-                <img src="/image.png" />
-              </form>
+               <img src="/image.png" /> 
+              </form> */}
             </li>
           </ul>
-              <ul className="list-unstyled components">
-                <p>Categories</p>
-                {this.renderDropdown()}
-              </ul>
+          <ul className="list-unstyled components">
+            <p>Categories</p>
+            {this.renderDropdown()}
+          </ul>
         </nav>
 
-            {/* <!-- Page Content  --> */}
-            <div id="content">
-              <Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} />
-              {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
-              <div className="card-inline">
-                {this.state.books.map(this.renderBooks)}
-                {/* {<CarouselItem imgs={array}></CarouselItem>} */}
-              </div>
-            </div>
+        {/* <!-- Page Content  --> */}
+        <div id="content">
+          <Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} />
+          {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
+          <div className="card-inline">
+            {this.state.books.map(this.renderBooks)}
+            {/* {<CarouselItem imgs={array}></CarouselItem>} */}
+          </div>
+        </div>
       </div>
-          );
-        }
-      }
-      
-      export default Main;
+    );
+  }
+}
+
+export default Main;
