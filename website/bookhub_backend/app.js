@@ -4,6 +4,8 @@ const app = express();
 const cors = require('cors');
 const multer = require("multer");
 const path = require("path");
+const base64ToImage = require('base64-img');
+const fs = require('fs');
 
 // Create connection
 const db = mysql.createConnection({
@@ -29,7 +31,7 @@ app.get('/', (req, res) => {
 app.get("/", express.static(path.join(__dirname, "./public")));
 
 app.get('/books', (req, res) => {
-  db.query('SELECT * FROM BOOKS', (err, results) => {
+  db.query('SELECT * FROM listedbooks', (err, results) => {
     if (err) {
       return res.send(err);
     } else {
@@ -122,7 +124,8 @@ app.get('/searchResults', (req, res) => {
   //   }
   // }
   db.query(
-    `SELECT * FROM usefor NATURAL JOIN listedbooks WHERE title LIKE '%${searchInput}%'`,
+    //`SELECT * FROM usefor NATURAL JOIN listedbooks WHERE title LIKE '%${searchInput}%'`,
+    `SELECT * FROM listedbooks WHERE title LIKE '%${searchInput}%'`,
     (err, results) => {
       if (err) {
         return res.send(err);
@@ -196,6 +199,23 @@ app.get('/login', (req, res) => {
 });
 
 
+app.get('/addListing', (req, res) => {
+  const { bookName, bookEdition, bookISBN, bookPrice, bookType, bookCondition } = req.query;
+  console.log("in book listing", bookName, bookEdition, bookISBN, bookPrice, bookType, bookCondition);
+  const INSERT_USER_QUERY = `INSERT INTO listedbooks(title, edition, isbn, price, book_type, book_condition) 
+	VALUES ('${bookName}','${bookEdition}','${bookISBN}','${bookPrice}', '${bookType}', '${bookCondition}')`;
+  db.query(INSERT_USER_QUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
+    }
+    console.log("successfully added book to listing");
+  });
+});
+
 // handling the file upload
 // app.post('/upload', (req, res) => {
 //   // create an incoming form object
@@ -228,39 +248,51 @@ app.get('/login', (req, res) => {
 //   form.parse(req);
 // });
 
-const upload = multer({
-  dest: "C:/Users/xinru/Documents/bookhub/website"
-  // you might also want toset some limits: https://github.com/expressjs/multer#limits
+// const upload = multer({
+//   dest: "C:/Users/xinru/Documents/bookhub/website"
+//   // you might also want toset some limits: https://github.com/expressjs/multer#limits
+// });
+
+app.get('/upload', (req, res) => {
+  
+  let { fileData, fileName } = req.query;
+  // fileData = Buffer.from(fileData, '').toString('base64');
+  console.warn("in backend upload", fileData);
+  // fileData =  fileData[0].replace(/^data:image\/png;base64,/, "");
+  // fileData = fileData.replace(/(\r\n|\n|\r)/gm, "");
+  // console.warn(fileData);
+  // console.log(fileData);
+  // const file = `${__dirname}/uploads/${fileName}`;
+  // res.download(file); // Set disposition and send it.
+  // base64Img.img(fileData, './uploads', fileName, function(err, filepath) {});
+  // let base64Image = fileData.split(';base64,').pop();
+
+  // fs.writeFile('./uploads/image.png', base64Image, {encoding: 'base64'}, function(err) {
+  //   console.log('File created');
+  // });
+  // fs.writeFile('./myfile.png', fileData , { flag: 'w' }, function(err) {
+  //   if (err) 
+  //       return console.error(err); 
+  //   // fs.readFile('./myfile.png', 'utf-8', function (err, data) {
+  //   //     if (err)
+  //   //         return console.error(err);
+  //   //     console.log(data);
+  //   // });
+  // });
+
+  fs.writeFile('../uploads/test1.png', fileData, function(err) { 
+    if (err) 
+        return console.error(err); 
+  });
 });
 
-app.post(
-  "/upload",
-  upload.single("file" /* name attribute of <file> element in your form */),
-  (req, res) => {
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, "./../uploads/image.png");
-
-    if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-      fs.rename(tempPath, targetPath, err => {
-        if (err) return handleError(err, res);
-
-        res
-          .status(200)
-          .contentType("text/plain")
-          .end("File uploaded!");
-      });
-    } else {
-      fs.unlink(tempPath, err => {
-        if (err) return handleError(err, res);
-
-        res
-          .status(403)
-          .contentType("text/plain")
-          .end("Only .png files are allowed!");
-      });
-    }
-  }
-);
+// app.post("/upload",
+//   (req, res) => {
+//     alert(req);
+//     alert(res);
+//     console.sleep(1000);
+//   }
+// );
 
 app.get("/image.png", (req, res) => {
   res.sendFile(path.join(__dirname, "./uploads/image.png"));
