@@ -31,7 +31,7 @@ app.get('/', (req, res) => {
 app.get("/", express.static(path.join(__dirname, "./public")));
 
 app.get('/books', (req, res) => {
-  db.query('SELECT * FROM BOOKS', (err, results) => {
+  db.query('SELECT * FROM listedbooks', (err, results) => {
     if (err) {
       return res.send(err);
     } else {
@@ -105,7 +105,8 @@ app.get('/searchResults', (req, res) => {
   //   }
   // }
   db.query(
-    `SELECT * FROM usefor NATURAL JOIN listedbooks WHERE title LIKE '%${searchInput}%'`,
+    //`SELECT * FROM usefor NATURAL JOIN listedbooks WHERE title LIKE '%${searchInput}%'`,
+    `SELECT * FROM listedbooks WHERE title LIKE '%${searchInput}%'`,
     (err, results) => {
       if (err) {
         return res.send(err);
