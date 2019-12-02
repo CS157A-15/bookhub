@@ -1,5 +1,5 @@
-const express = require('express');
-const mysql = require('mysql');
+const express = require("express");
+const mysql = require("mysql");
 const app = express();
 const cors = require('cors');
 const multer = require("multer");
@@ -63,6 +63,25 @@ app.get('/department', (req, res) => {
         data: results
       });
     }
+  });
+});
+
+app.get("/userListings", (req, res) => {
+  const { email } = req.query;
+  db.query(
+    `SELECT * FROM List NATURAL JOIN ListedBooks WHERE email = '${email}'`,
+    (err, result) => {
+      if (err) throw err;
+      res.send(result);
+    }
+  );
+});
+
+app.get("/profile", (req, res) => {
+  const { email } = req.query;
+  db.query(`SELECT * FROM users WHERE email = '${email}'`, (err, result) => {
+    if (err) throw err;
+    res.send(result);
   });
 });
 
@@ -222,6 +241,37 @@ app.get('/upload', (req, res) => {
 app.get("/image.png", (req, res) => {
   res.sendFile(path.join(__dirname, "./uploads/image.png"));
 });
+
+
+app.get('/message_received', (req, res) => {
+    const {email} = req.query;
+    db.query(`SELECT content, date, sender.sender_email AS "received_from" FROM messages, sender where messages.message_id IN (SELECT message_id FROM receiver WHERE receiver_email = '${email}') AND messages.message_id = sender.message_id`, (err, results) =>{
+        if(err){
+            return res.send(err)
+        }
+        else {
+            return res.json({
+                data: results
+            })
+        }
+    });
+});
+
+app.get('/message_sent', (req, res) => {
+    const {email} = req.query;
+    db.query(`SELECT content, date, receiver.receiver_email AS "sent_to" FROM messages, receiver where messages.message_id IN (SELECT message_id FROM sender WHERE sender_email = '${email}') AND messages.message_id = receiver.message_id`, (err, results) =>{
+        if(err){
+            return res.send(err)
+        }
+        else {
+            return res.json({
+                data: results
+            })
+        }
+    });
+});
+
+
 
 app.listen('4000', () => {
   console.log('Server started on port 4000');

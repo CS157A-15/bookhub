@@ -1,0 +1,14 @@
+.card {
+  height: 30 rem;
+}
+.card-img-top {
+  width: 100%;
+  height: 20vw;
+  object-fit: cover;
+}
+
+.card-title {
+  white-space: pre;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
