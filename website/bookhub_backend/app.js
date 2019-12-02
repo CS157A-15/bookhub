@@ -4,7 +4,7 @@ const app = express();
 const cors = require('cors');
 const multer = require("multer");
 const path = require("path");
-const base64ToImage = require('base64-img');
+const base64Img = require('base64-img');
 const fs = require('fs');
 
 // Create connection
@@ -95,15 +95,6 @@ app.get('/listedBooks', (req, res) => {
 
 app.get('/searchResults', (req, res) => {
   const { searchInput } = req.query;
-  // let SQLSearchParam =``;
-  // for (let i = 0; i < searchInput.length; i++) {
-  //   console.log(searchInput[i]);
-  //   if (i === 0) {
-  //     SQLSearchParam += `${searchInput[i]}`;
-  //   } else {
-  //     SQLSearchParam += `OR title LIKE '%${searchInput[i]}%' `;
-  //   }
-  // }
   db.query(
     //`SELECT * FROM usefor NATURAL JOIN listedbooks WHERE title LIKE '%${searchInput}%'`,
     `SELECT * FROM listedbooks WHERE title LIKE '%${searchInput}%'`,
@@ -198,55 +189,12 @@ app.get('/addListing', (req, res) => {
 });
 
 // handling the file upload
-// app.post('/upload', (req, res) => {
-//   // create an incoming form object
-//   let form = new formidable.IncomingForm();
-
-//   // specify that we want to allow the user to upload multiple files in a single request
-//   form.multiples = true;
-
-//   // store all uploads in the /uploads directory
-//   form.uploadDir = path.join(__dirname, '../../../uploads');
-
-//   // every time a file has been uploaded successfully,
-//   // rename it to it's orignal name
-//   form.on('file', function(field, file) {
-//     logger.info(`Uploaded: "${file.name}"`);
-//     fs.rename(file.path, path.join(form.uploadDir, file.name));
-//   });
-
-//   // log any errors that occur
-//   form.on('error', function(err) {
-//     errorLogger.error('During file upload: ' + err);
-//   });
-
-//   // once all the files have been uploaded, send a response to the client
-//   form.on('end', function() {
-//     res.end('success');
-//   });
-
-//   // parse the incoming request containing the form data
-//   form.parse(req);
-// });
-
-// const upload = multer({
-//   dest: "C:/Users/xinru/Documents/bookhub/website"
-//   // you might also want toset some limits: https://github.com/expressjs/multer#limits
-// });
-
 app.get('/upload', (req, res) => {
   
   let { fileData, fileName } = req.query;
-  // fileData = Buffer.from(fileData, '').toString('base64');
-  console.warn("in backend upload", fileData);
-  // fileData =  fileData[0].replace(/^data:image\/png;base64,/, "");
-  // fileData = fileData.replace(/(\r\n|\n|\r)/gm, "");
-  // console.warn(fileData);
-  // console.log(fileData);
-  // const file = `${__dirname}/uploads/${fileName}`;
-  // res.download(file); // Set disposition and send it.
-  // base64Img.img(fileData, './uploads', fileName, function(err, filepath) {});
-  // let base64Image = fileData.split(';base64,').pop();
+  // fileData = fileData + Buffer.from("'data:image/png").toString('base64');
+  console.log("in backend upload", fileData);
+
 
   // fs.writeFile('./uploads/image.png', base64Image, {encoding: 'base64'}, function(err) {
   //   console.log('File created');
@@ -261,19 +209,15 @@ app.get('/upload', (req, res) => {
   //   // });
   // });
 
-  fs.writeFile('../uploads/test1.png', fileData, function(err) { 
+  fs.writeFile('../uploads/test2.png', fileData, function(err) { 
     if (err) 
         return console.error(err); 
   });
+
+  // base64Img.img(b, '../uploads', 'test2.png', function(err, filepath) {});
+
 });
 
-// app.post("/upload",
-//   (req, res) => {
-//     alert(req);
-//     alert(res);
-//     console.sleep(1000);
-//   }
-// );
 
 app.get("/image.png", (req, res) => {
   res.sendFile(path.join(__dirname, "./uploads/image.png"));

@@ -8,7 +8,6 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
-
 function UploadBox(props) {
   return (
     <Modal
@@ -51,7 +50,10 @@ function UploadBox(props) {
                 {/* <Button onClick={addListing()}>Submit</Button> */}
               </form>
             </Col>
-            <Col><p>Place holder for book Upload</p></Col>
+            <Col>
+              <p>Upload pictures</p>
+              <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => handleImageChange(e)} />
+            </Col>
           </Row>
         </Container>
 
@@ -99,7 +101,7 @@ export default function Upload() {
 
   return (
     <ButtonToolbar>
-      <Button variant="primary" onClick={() => setModalShow(true)}>
+      <Button  id="listbook" variant="primary" onClick={() => setModalShow(true)}>
         List a book
           </Button>
 
@@ -110,3 +112,34 @@ export default function Upload() {
     </ButtonToolbar>
   );
 }
+
+
+//----------------------- Handling the file upload-------------------------------------
+function handleImageChange(e) {
+  e.preventDefault();
+
+  let reader = new FileReader();
+  let files = e.target.files;
+  let base64 = "";
+  reader.readAsDataURL(files[0]);
+
+  reader.onloadend = () => {
+    base64 = reader.result;
+
+    console.log(base64);
+
+    let base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
+    console.log(base64Data);
+
+    const buf = new Buffer(base64Data,'base64');
+    console.log("buf", buf);
+
+    uploadFiles("name", buf); //sending the data to the backend
+  }
+}
+
+
+function uploadFiles (fileName, fileData) {
+  fetch(`http://localhost:4000/upload?fileData=${fileData}&fileName=${fileName}`, { mode: 'no-cors' })
+    .catch(err => console.error(err));
+};
