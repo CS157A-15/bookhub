@@ -4,18 +4,22 @@ import Card from "./Card";
 import "./Profile.css";
 import Navbar from "../main/navbar/navbar";
 import defaultIcon from "./default-user-icon.jpg";
-// import Sidebar from "../main/sidebar/sidebar";
 
 class Profile extends Component {
-  state = {
-    user: null,
-    profile_picture: null,
-    email: null,
-    listings: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+      profile_picture: null,
+      email: props.email,
+      listings: []
+    };
+  }
 
   componentDidMount() {
     const { handle } = this.props.match.params;
+
+    console.log(this.props.email);
 
     fetch(`http://localhost:4000/profile?email=${handle}`) // user info
       .then(res => res.json())
@@ -53,7 +57,6 @@ class Profile extends Component {
     return (
       <div>
         <Navbar />
-        {/* <Sidebar /> */}
         <div className="Top">
           <header class="page-cover">
             <div class="text-center">
