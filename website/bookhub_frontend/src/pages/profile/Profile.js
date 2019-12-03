@@ -4,16 +4,18 @@ import Card from "./Card";
 import "./Profile.css";
 import Navbar from "../navbar/navbar";
 import defaultIcon from "./default-user-icon.jpg";
-import UserAuth from '../../user_auth';
-// import Sidebar from "../main/sidebar/sidebar";
+import UserAuth from "../../user_auth";
 
 class Profile extends Component {
-  state = {
-    user: null,
-    profile_picture: null,
-    email: null,
-    listings: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+      profile_picture: null,
+      email: props.email,
+      listings: []
+    };
+  }
 
   componentDidMount() {
     fetch(`http://localhost:4000/profile?email=${UserAuth.getEmail()}`) // user info
@@ -52,7 +54,6 @@ class Profile extends Component {
     return (
       <div>
         <Navbar />
-        {/* <Sidebar /> */}
         <div className="Top">
           <header class="page-cover">
             <div class="text-center">
@@ -65,9 +66,6 @@ class Profile extends Component {
               />
               <h2 class="h4 mt-2 mb-0">{user}</h2>
               <p class="text-muted">{email}</p>
-              <button class="btn btn-primary" type="submit">
-                Message
-              </button>
             </div>
           </header>
         </div>
