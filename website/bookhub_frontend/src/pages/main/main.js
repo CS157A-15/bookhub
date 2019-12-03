@@ -115,20 +115,16 @@ class Main extends Component {
 
   //----------------------------------- Handeling the serach ---------------------------------
   handleSearch = e => {
-    // console.log('handleSearch from main');
     this.setState({ searchInput: e.target.value });
   };
 
   enterPressed = event => {
-    console.log('enterPressed from main');
-
     var code = event.keyCode || event.which;
     if (code === 13) {
       //13 is the enter keycode
       event.preventDefault();
 
       let searchWords = this.state.searchInput.trim().split(' ');
-      console.log(searchWords);
       this.getSearchResults(this.generateSQLSearchParam(searchWords));
     }
 
@@ -138,11 +134,10 @@ class Main extends Component {
   generateSQLSearchParam(searchWords) {
     let SQLSearchParam = '';
     for (let i = 0; i < searchWords.length; i++) {
-      console.log(searchWords[i]);
       if (i === 0) {
-        SQLSearchParam += `${searchWords[i]}`;
+        SQLSearchParam = SQLSearchParam.concat(searchWords[i]);
       } else {
-        SQLSearchParam += `OR title LIKE '%${searchWords[i]}%' `;
+        SQLSearchParam = SQLSearchParam.concat("%20"+searchWords[i]);
       }
     }
 
@@ -229,7 +224,6 @@ class Main extends Component {
   createCItemList(imgs) {
     let carouselItems = [];
     for (let i = 0; i < imgs.length; i++) {
-        console.log("in for loop");
         // let cItem = 
         carouselItems.push(
             <MDBCarouselItem itemId={i + 1}>
@@ -243,7 +237,6 @@ class Main extends Component {
             </MDBCarouselItem>
         );
     }
-    console.log("carouselItems", carouselItems);
     return carouselItems;
 }
 
@@ -267,7 +260,7 @@ class Main extends Component {
               src="https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"
               waves
             /> */}
-            <CarouselItem imgs={citems} >
+            <CarouselItem>
             </CarouselItem>
             <MDBCardBody>
               <MDBCardTitle>{title}</MDBCardTitle>
@@ -317,9 +310,10 @@ class Main extends Component {
       let base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
       console.log(base64Data);
 
-      const buf = Buffer.from(base64Data).toString('base64');
+      const buf = new Buffer(base64Data,'base64');
       console.log("buf", buf);
-
+      // const buf = new Buffer(base64,'base64');
+      // const info = buf.toString('base64');
       this.uploadFiles("name", buf); //sending the data to the backend
 
       // let base64Image = base64.split(';base64,').pop();
@@ -327,24 +321,6 @@ class Main extends Component {
       //   console.log('File created');
       // });
     }
-
-    // let base64Image = base64.split(';base64,').pop();
-    // fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function (err) {
-    //   console.log('File created');
-    // });
-
-
-    // reader.onload = (e) => {
-    //   const url =  "http://localhost:4000/upload";
-    //   const formData = { file: e.target.result}
-    //   return post(url, formData)
-    //     .then(response => console.warn("result", response));
-    // }
-
-    // fetch(`http://localhost:4000/upload`)
-    //   .then(res =>{ console.log("inside upload call frontend")});
-
-
   }
 
   //https://stackoverflow.com/questions/20267939/nodejs-write-base64-image-file
@@ -427,13 +403,7 @@ class Main extends Component {
                 Add Book
               </button> */}
               {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
-              <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => this.handleImageChange(e)} />
               <Upload />
-              {/* <form action="/upload" method="POST" enctype="multipart/form-data">
-                <input type="file" name="file"/>
-                <input type="submit" value="Submit"/>
-               <img src="/image.png" /> 
-              </form> */}
             </li>
           </ul>
           <ul className="list-unstyled components">
