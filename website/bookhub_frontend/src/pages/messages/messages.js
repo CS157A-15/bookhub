@@ -5,92 +5,95 @@ import {Link} from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Navbar from '../navbar/navbar';
 import UserAuth from '../../user_auth';
+import { MDBBtn, MDBInput } from 'mdbreact';
 
 class Messages extends Component {
     constructor(props){
         super(props)
         this.state = {
             user_email:'',
+            sendMessage:'',
             username: '',
-            messagesSent:[],
-            messagesReceived:[],
-            selectedMessages:[],
+            other_email:'',
+            conversationSelected: 0,
             conversations: [],
+            messages:[],
             auth: UserAuth.getAuth()
         }
     }
 
     componentWillMount(){
         if (UserAuth.getAuth() === true) {
-            this.setState({user_email: UserAuth.getEmail(), username: UserAuth.getUsername(), auth: UserAuth.getAuth()});
-            this.getSentMessages();
-            this.getReceivedMessages();
+            this.setState({user_email: UserAuth.getEmail(), username: UserAuth.getUsername(), auth: UserAuth.getAuth(),conversationSelected: 0});
+            // this.getSentMessages();
+            // this.getReceivedMessages();
+            this.getMessages();
+            this.getConversations();
         }
     }
 
-    getSentMessages = async _ => {
+    getConversations = async _ => {
         if(this.state.auth === true){
-            await fetch(`http://localhost:4000/message_sent?email=${UserAuth.getEmail()}`)
+            await fetch(`http://localhost:4000/conversation?email=${UserAuth.getEmail()}`)
             .then(res => res.json())
-            .then(res => this.setState({messagesSent: res.data}))
+            .then(res => this.setState({conversations: res.data}))
             .catch(err => console.error(err));
         }   
-        this.state.messagesSent.map((e)=>{
-            if(this.state.conversations.indexOf(e.sent_to) === -1){
-                this.state.conversations.push(e.sent_to);
-                console.log(this.state.conversations);
-            };
+        this.state.conversations.map((e)=>{
+                console.log(e);
         })
      }
 
-     getReceivedMessages = async _ => {
-        if(this.state.auth === true){
-            await fetch(`http://localhost:4000/message_received?email=${UserAuth.getEmail()}`)
+     getMessages = async e => {
+        if(e === undefined){
+             console.log("CLICK ONE OF THE BUTTONS");
+         }
+        else if(this.state.auth === true){
+            this.setState({other_email: e});
+            await fetch(`http://localhost:4000/messages?email=${UserAuth.getEmail()}&otheremail=${e}`)
             .then(res => res.json())
-            .then(res => this.setState({messagesReceived: res.data}))
-            .catch(err => console.error(err))
-
-            this.state.messagesReceived.map((e)=>{
-                if(this.state.conversations.indexOf(e.received_from) === -1){
-                    this.state.conversations.push(e.received_from);
-                    console.log(this.state.conversations);
-                };
-            })
-        }   
-     }
-
-     displayMessages(e){
-        for(var i = 0; i<this.state.messagesSent.length;i++){
-            if(this.state.messagesSent[i].sent_to !== e){
-                this.state.messagesSent.splice(i,1);
-            }
+            .then(res => this.setState({messages: res.data}))
+            .catch(err => console.error(err));
+            this.state.conversations.map((k)=>{
+                console.log(k);
+            });
         }
+    };
+    
+    renderMessages = ({message_id, content,date,sender_email,receiver_email}) =>{
+        var align;
+        var message;
+        if(sender_email === UserAuth.getEmail()){
+            align = "right";
+            message = "mine messages"
+        }
+        else{
+            align = "left"
+            message = "yours messages"
+        }
+        return <div key ={message_id} align= {align}  className={message}>
+            <div className="message">
+            {content}
+            </div>
+        </div> 
     }
-
     
-    
-    renderSentMessages = ({content,date,sent_to}) => 
-    <div key ={content}>
-        Content = {content} date = {date} Sent To = {sent_to}
-    </div> 
 
-    renderReceivedMessages = ({content,date,received_from}) => 
-    <div key ={content}>
-        Content = {content} date = {date} Received From = {received_from}
-    </div> 
-
-    renderConversations = (e)=> 
-    <div key = {e}>
-        <li>
-            <a onClick={this.displayMessages(e)}>{e}</a>
-        </li>
-    </div> 
+    btnConversation = async e => {
+        const id = e.target.id;
+        this.setState({conversationSelected: 1});
+        this.setState({other_email:id})
+        console.log("e.id =",id);
+        this.getMessages(id);
+    };
+        
+    renderConversations = ({sender_email}) => 
+    <button id={sender_email} type="button" class="btn btn-primary" onClick={this.btnConversation}>{sender_email}</button> 
 
     render(){
         if (this.state.auth === false) {
             return <Redirect push to="/" />;
         }
-
         return (
             <div className="wrapper">
                 <nav id="sidebar" align="center">
@@ -98,27 +101,69 @@ class Messages extends Component {
                     <img  className="center" width="100" height="100" src="https://upload.wikimedia.org/wikipedia/en/thumb/e/ec/San_Jose_State_Spartans_logo.svg/378px-San_Jose_State_Spartans_logo.svg.png" alt = "SJSU SAMMY"/>
                     <h3>Bookhub</h3>
                 </div>
-                <ul className="list-unstyled CTAs">
+                {/* <ul className="list-unstyled CTAs">
                     <li>
                         <button type="button" className="btn btn-light">New Message</button>
                     </li>
-                </ul>
+                </ul> */}
                 <ul className="list-unstyled">
                     <p>Messages</p>
+                    <div id="button_list">
                     {this.state.conversations.map(this.renderConversations)}
+                    </div>
                 </ul>
                 </nav>
 
             {/* <!-- Page Content  --> */}
             <div id="content">
-               <Navbar/>
-               WELCOME
-                {this.state.messagesSent.map(this.renderSentMessages)}
-                {this.state.messagesReceived.map(this.renderReceivedMessages)}
+                <Navbar/>
+                {this.showMessages()}       
             </div>
         </div>
         )
     }
-}
 
+    showMessages = _=>{
+        if(this.state.conversationSelected === 1){
+            return (
+                <div>
+                    <div className="chat">
+                        {this.state.messages.map(this.renderMessages)}
+                    </div>
+                    <div>
+                        <div id="input-area">
+                        <MDBInput id="text_input" label="Type Your Message" rows="1" class="md-textarea form-control" style= {{width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
+                        </div>
+                        <div id="send">
+                            <button className="btn btn-light" style= {{align: "center"}} type="submit" onClick={this.sendMessage}> Send</button>
+                        </div>
+                    </div>
+                </div>
+            )
+        }
+        else{
+            return <div style={{fontStyle: "oblique" ,fontSize: "500%", textAlign: "center"}}>Select a Conversation</div>
+        }
+    }
+
+    sendMessage = async _=>{
+        console.log(this.state.sendMessage);
+        console.log(this.state.other_email);
+        console.log(this.state.user_email);
+        await fetch(`http://localhost:4000/sendMessage?message=${this.state.sendMessage}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+
+        await fetch(`http://localhost:4000/sender?sender_email=${this.state.user_email}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+
+        await fetch(`http://localhost:4000/receiver?receiver_email=${this.state.other_email}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+        this.getMessages(this.state.other_email);
+        
+        this.text_input.value = "";
+    }
+}
 export default Messages;

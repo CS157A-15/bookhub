@@ -17,7 +17,7 @@ class Navigation extends Component {
           <Route path="/signup" component={Signup} />
           <Route path="/main" component={Main} />
           <Route path="/messages" component={Messages} />
-          <Route path="/profile/:handle" component={Profile} />
+          <Route path="/profile" component={Profile} />
         </Switch>
       </Router>
     );
