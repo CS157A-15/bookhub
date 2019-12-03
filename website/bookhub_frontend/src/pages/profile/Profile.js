@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Card from "./Card";
 import "./Profile.css";
-import Navbar from "../main/navbar/navbar";
+import Navbar from "../navbar/navbar";
 import defaultIcon from "./default-user-icon.jpg";
+import UserAuth from '../../user_auth';
 // import Sidebar from "../main/sidebar/sidebar";
 
 class Profile extends Component {
@@ -15,9 +16,7 @@ class Profile extends Component {
   };
 
   componentDidMount() {
-    const { handle } = this.props.match.params;
-
-    fetch(`http://localhost:4000/profile?email=${handle}`) // user info
+    fetch(`http://localhost:4000/profile?email=${UserAuth.getEmail()}`) // user info
       .then(res => res.json())
       .then(data => {
         this.setState({
@@ -25,7 +24,7 @@ class Profile extends Component {
           email: data[0].email
         });
       });
-    fetch(`http://localhost:4000/userListings?email=${handle}`) // user listings
+    fetch(`http://localhost:4000/userListings?email=${UserAuth.getEmail()}`) // user listings
       .then(res => res.json())
       .then(data => {
         this.setState({
