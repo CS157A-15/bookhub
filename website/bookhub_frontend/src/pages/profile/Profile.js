@@ -66,9 +66,6 @@ class Profile extends Component {
               />
               <h2 class="h4 mt-2 mb-0">{user}</h2>
               <p class="text-muted">{email}</p>
-              <button class="btn btn-primary" type="submit">
-                Message
-              </button>
             </div>
           </header>
         </div>
