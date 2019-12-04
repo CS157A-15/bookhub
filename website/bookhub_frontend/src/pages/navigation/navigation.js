@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./navigation.css";
-import Login from "../login/Login.js";
+import Login from "../login/login.js";
 import Signup from "../signup/signup.js";
 import Main from "../main/main.js";
 import Messages from "../messages/messages.js";

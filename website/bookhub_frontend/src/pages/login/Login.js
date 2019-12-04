@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import './Login.css';
+import './login.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import {Link,Redirect} from 'react-router-dom';
 import UserAuth from '../../user_auth';
@@ -20,7 +20,6 @@ class Login extends Component {
         }   
      }
   } 
-
 
   render() {
     const { user } = this.state;

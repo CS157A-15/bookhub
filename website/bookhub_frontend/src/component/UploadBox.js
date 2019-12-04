@@ -7,6 +7,7 @@ import './UploadBox.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import UserAuth from '../user_auth';
 
 function UploadBox(props) {
   return (
@@ -72,7 +73,7 @@ function UploadBox(props) {
         );
       }
       
-function addListing(event) {
+async function addListing(event) {
           event.preventDefault();
         console.log("in add listiing");
         const name = document.getElementsByName("bookname")[0];
@@ -85,14 +86,23 @@ function addListing(event) {
   if (name && edition && isbn && price && type && condition) {
           console.log("book attributes", name.value, edition.value, isbn.value,
             price.value, type.value, condition.value);
-  
     fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
           .then(res => res.json())
       .then(res => {
         })
         .catch(err => console.error(err));
   
-  
+      var autoIncrementId;
+      await fetch(`http://localhost:4000/lastID`)
+            .then(res => res.json().then(res => res.data.map((p)=>
+            autoIncrementId = p.id)))
+
+      console.log(autoIncrementId);
+
+      await fetch(`http://localhost:4000/addLists?email=${UserAuth.getEmail()}&id=${autoIncrementId}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+
       //clearing form input
       name.value = "";
       edition.value = "";

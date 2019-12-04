@@ -11,7 +11,7 @@ const fs = require("fs");
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: '!Salmonfoodie22',
+  password: 'Maninderpal51',
   database: 'bookhub'
 });
 
@@ -273,6 +273,32 @@ app.post('/uploadfile', (req, res) => {
   });
 });
 
+app.get('/lastID', (req, res) => {
+  db.query(`SELECT LAST_INSERT_ID() as id`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+app.get('/addLists', (req, res) => {
+  const {email, id} = req.query;
+  db.query(`INSERT INTO list (email,list_id) values ('${email}', '${id}' )`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
 
 app.get('/conversation', (req, res) => {
   const {email} = req.query;

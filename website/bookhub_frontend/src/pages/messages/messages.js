@@ -132,7 +132,7 @@ class Messages extends Component {
                     </div>
                     <div>
                         <div id="input-area">
-                        <MDBInput id="text_input" label="Type Your Message" rows="1" class="md-textarea form-control" style= {{width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
+                        <MDBInput name="text_input" label="Type Your Message" rows="1" class="md-textarea form-control" style= {{width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
                         </div>
                         <div id="send">
                             <button className="btn btn-light" style= {{align: "center"}} type="submit" onClick={this.sendMessage}> Send</button>
@@ -163,7 +163,8 @@ class Messages extends Component {
         .catch(err => console.error(err));
         this.getMessages(this.state.other_email);
         
-        this.text_input.value = "";
+        const text = document.getElementsByName("text_input")[0];
+        text.value = "";
     }
 }
 export default Messages;
