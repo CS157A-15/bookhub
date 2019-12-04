@@ -119,6 +119,7 @@ class Messages extends Component {
                 <Navbar/>
                 {this.showMessages()}       
             </div>
+        </div>
         )
     }
 

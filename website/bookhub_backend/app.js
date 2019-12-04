@@ -11,7 +11,7 @@ const fs = require("fs");
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Maninderpal51', //'!Salmonfoodie22',
+  password: '!Salmonfoodie22',
   database: 'bookhub'
 });
 
