@@ -208,6 +208,48 @@ app.get('/addListing', (req, res) => {
 });
 
 // handling the file upload
+const storage = multer.diskStorage({
+  destination: '../uploads',
+  filename: function(req, file, cb){
+    cb(null, file.fieldname+Date.now+path.extname(file.originalname));
+  }
+});
+
+const upload = multer({
+  storage: storage,
+  limits:{fileSize: 1000000},
+  fileFilter: function(req, file, cb) {
+    checkFileType(file, cb);
+  }
+}).single('fileToUpload');
+
+function checkFileType(file, cb) {
+  const filetypes = /jped|jpg|png/;
+
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if(extname && mimetype){
+    return cb(null, true);
+  } else {
+    return cb("Error: images only");
+  }
+}
+
+app.post('/uploadfile', (req, res) => {
+  upload(req, res, (err) => {
+    if(err){
+      console.log("error cant upload");
+    } else {
+      if(req.file == undefined){
+        console.log("error no file submitted");
+      } else {
+        console.log("file uploaded successfully");
+      }
+    }
+  });
+});
+
 app.get('/upload', (req, res) => {
   
   let { fileData, fileName } = req.query;
