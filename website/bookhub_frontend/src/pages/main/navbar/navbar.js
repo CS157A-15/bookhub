@@ -36,8 +36,6 @@ auth= _=>{
   this.setState({authorize:UserAuth.getAuth()});
 }
 
-
-
 render() {
   if (this.state.authorize == false) {
     return <Redirect push to="/" />;

@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./navigation.css";
-import Login from "../login/login";
-import Signup from "../signup/signup";
-import Main from "../main/main";
-import Messages from "../messages/messages";
-import Profile from "../profile/Profile";
+import Login from "../login/Login.js";
+import Signup from "../signup/signup.js";
+import Main from "../main/main.js";
+import Messages from "../messages/messages.js";
+import Profile from "../profile/Profile.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class Navigation extends Component {

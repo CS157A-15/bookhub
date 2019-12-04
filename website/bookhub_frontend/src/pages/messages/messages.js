@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import './messages.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Navbar from '../navbar/navbar';
 import UserAuth from '../../user_auth';
 import { MDBBtn, MDBInput } from 'mdbreact';
 
 class Messages extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             user_email:'',
@@ -22,7 +22,7 @@ class Messages extends Component {
         }
     }
 
-    componentWillMount(){
+    componentWillMount() {
         if (UserAuth.getAuth() === true) {
             this.setState({user_email: UserAuth.getEmail(), username: UserAuth.getUsername(), auth: UserAuth.getAuth(),conversationSelected: 0});
             // this.getSentMessages();
@@ -119,7 +119,6 @@ class Messages extends Component {
                 <Navbar/>
                 {this.showMessages()}       
             </div>
-        </div>
         )
     }
 

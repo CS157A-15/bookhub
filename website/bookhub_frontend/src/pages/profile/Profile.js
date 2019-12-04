@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Card from "./Card";
+import Card from "./Card.js";
 import "./Profile.css";
-import Navbar from "../navbar/navbar";
+import Navbar from "../navbar/navbar.js";
 import defaultIcon from "./default-user-icon.jpg";
 import UserAuth from "../../user_auth";
 

@@ -231,86 +231,47 @@ app.get("/addListing", (req, res) => {
 });
 
 // handling the file upload
-// app.post('/upload', (req, res) => {
-//   // create an incoming form object
-//   let form = new formidable.IncomingForm();
+const storage = multer.diskStorage({
+  destination: '../uploads',
+  filename: function(req, file, cb){
+    cb(null, file.fieldname+Date.now+path.extname(file.originalname));
+  }
+});
 
-//   // specify that we want to allow the user to upload multiple files in a single request
-//   form.multiples = true;
+const upload = multer({
+  storage: storage,
+  limits:{fileSize: 1000000},
+  fileFilter: function(req, file, cb) {
+    checkFileType(file, cb);
+  }
+}).single('fileToUpload');
 
-//   // store all uploads in the /uploads directory
-//   form.uploadDir = path.join(__dirname, '../../../uploads');
+function checkFileType(file, cb) {
+  const filetypes = /jped|jpg|png/;
 
-//   // every time a file has been uploaded successfully,
-//   // rename it to it's orignal name
-//   form.on('file', function(field, file) {
-//     logger.info(`Uploaded: "${file.name}"`);
-//     fs.rename(file.path, path.join(form.uploadDir, file.name));
-//   });
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
 
-//   // log any errors that occur
-//   form.on('error', function(err) {
-//     errorLogger.error('During file upload: ' + err);
-//   });
+  if(extname && mimetype){
+    return cb(null, true);
+  } else {
+    return cb("Error: images only");
+  }
+}
 
-//   // once all the files have been uploaded, send a response to the client
-//   form.on('end', function() {
-//     res.end('success');
-//   });
-
-//   // parse the incoming request containing the form data
-//   form.parse(req);
-// });
-
-// const upload = multer({
-//   dest: "C:/Users/xinru/Documents/bookhub/website"
-//   // you might also want toset some limits: https://github.com/expressjs/multer#limits
-// });
-
-app.get("/upload", (req, res) => {
-  let { fileData, fileName } = req.query;
-  // fileData = Buffer.from(fileData, '').toString('base64');
-  console.warn("in backend upload", fileData);
-  // fileData =  fileData[0].replace(/^data:image\/png;base64,/, "");
-  // fileData = fileData.replace(/(\r\n|\n|\r)/gm, "");
-  // console.warn(fileData);
-  // console.log(fileData);
-  // const file = `${__dirname}/uploads/${fileName}`;
-  // res.download(file); // Set disposition and send it.
-  // base64Img.img(fileData, './uploads', fileName, function(err, filepath) {});
-  // let base64Image = fileData.split(';base64,').pop();
-
-  // fs.writeFile('./uploads/image.png', base64Image, {encoding: 'base64'}, function(err) {
-  //   console.log('File created');
-  // });
-  // fs.writeFile('./myfile.png', fileData , { flag: 'w' }, function(err) {
-  //   if (err)
-  //       return console.error(err);
-  //   // fs.readFile('./myfile.png', 'utf-8', function (err, data) {
-  //   //     if (err)
-  //   //         return console.error(err);
-  //   //     console.log(data);
-  //   // });
-  // });
-
-  fs.writeFile("../uploads/test1.png", fileData, function(err) {
-    if (err) return console.error(err);
+app.post('/uploadfile', (req, res) => {
+  upload(req, res, (err) => {
+    if(err){
+      console.log("error cant upload");
+    } else {
+      if(req.file == undefined){
+        console.log("error no file submitted");
+      } else {
+        console.log("file uploaded successfully");
+      }
+    }
   });
 });
-
-// app.post("/upload",
-//   (req, res) => {
-//     alert(req);
-//     alert(res);
-//     console.sleep(1000);
-//   }
-// );
-
-app.get("/image.png", (req, res) => {
-  res.sendFile(path.join(__dirname, "./uploads/image.png"));
-});
-
-
 
 
 app.get('/conversation', (req, res) => {
