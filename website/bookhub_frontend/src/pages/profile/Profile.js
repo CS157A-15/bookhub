@@ -4,20 +4,21 @@ import Card from "./Card.js";
 import "./Profile.css";
 import Navbar from "../navbar/navbar.js";
 import defaultIcon from "./default-user-icon.jpg";
-// import Sidebar from "../main/sidebar/sidebar";
+import UserAuth from "../../user_auth";
 
 class Profile extends Component {
-  state = {
-    user: null,
-    profile_picture: null,
-    email: null,
-    listings: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      user: null,
+      profile_picture: null,
+      email: props.email,
+      listings: []
+    };
+  }
 
   componentDidMount() {
-    const { handle } = this.props.match.params;
-
-    fetch(`http://localhost:4000/profile?email=${handle}`) // user info
+    fetch(`http://localhost:4000/profile?email=${UserAuth.getEmail()}`) // user info
       .then(res => res.json())
       .then(data => {
         this.setState({
@@ -25,7 +26,7 @@ class Profile extends Component {
           email: data[0].email
         });
       });
-    fetch(`http://localhost:4000/userListings?email=${handle}`) // user listings
+    fetch(`http://localhost:4000/userListings?email=${UserAuth.getEmail()}`) // user listings
       .then(res => res.json())
       .then(data => {
         this.setState({
@@ -53,7 +54,6 @@ class Profile extends Component {
     return (
       <div>
         <Navbar />
-        {/* <Sidebar /> */}
         <div className="Top">
           <header class="page-cover">
             <div class="text-center">
@@ -66,9 +66,6 @@ class Profile extends Component {
               />
               <h2 class="h4 mt-2 mb-0">{user}</h2>
               <p class="text-muted">{email}</p>
-              <button class="btn btn-primary" type="submit">
-                Message
-              </button>
             </div>
           </header>
         </div>

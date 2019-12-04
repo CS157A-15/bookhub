@@ -14,10 +14,10 @@ class Navigation extends Component {
       <Router>
         <Switch>
           <Route path="/" exact component={Login} />
-          <Route path="/signup" exact component={Signup} />
-          <Route path="/Main" exact component={Main} />
-          <Route path="/Messages" exact component={Messages} />
-          <Route path="/Profile/:handle" exact component={Profile} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/main" component={Main} />
+          <Route path="/messages" component={Messages} />
+          <Route path="/profile" component={Profile} />
         </Switch>
       </Router>
     );

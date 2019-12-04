@@ -70,7 +70,7 @@ a:focus {
 
 #sidebar {
     width: 250px;
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     height: 100vh;
@@ -182,8 +182,6 @@ a.article:hover {
     MEDIAQUERIES
 ----------------------------------------------------- */
 
-
-
 @media (max-width: 768px) {
     #sidebar {
         margin-left: -250px;
@@ -201,3 +199,61 @@ a.article:hover {
         display: none;
     }
 }
+
+
+
+
+.chat {
+    width: 100%;
+    height: 70vh;
+    overflow-y: scroll;
+    scroll-behavior: auto;
+    border: solid 1px #EEE;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+  
+  .messages {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .message {
+    border-radius: 20px;
+    padding: 8px 15px;
+    margin-top: 5px;
+    margin-bottom: 5px;
+    display: inline-block;
+  }
+  
+  .yours {
+    align-items: flex-start;
+  }
+  
+  .yours .message {
+    margin-right: 25%;
+    background-color: #eee;
+    position: relative;
+  }
+  
+  .mine {
+    align-items: flex-end;
+  }
+  
+  .mine .message {
+    color: white;
+    margin-left: 25%;
+    background: linear-gradient(to bottom, #00D0EA 0%, #0085D1 100%);
+    background-attachment: fixed;
+    position: relative;
+  }
+  
+  #input-area,#send{
+    display:inline-block;
+    vertical-align: top;
+    padding-top: 10px;
+}
+
+  
