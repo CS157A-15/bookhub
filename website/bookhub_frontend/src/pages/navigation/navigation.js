@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./navigation.css";
-import Login from "../login/login";
-import Signup from "../signup/signup";
-import Main from "../main/main";
-import Messages from "../messages/messages";
-import Profile from "../profile/Profile";
+import Login from "../login/Login.js";
+import Signup from "../signup/signup.js";
+import Main from "../main/main.js";
+import Messages from "../messages/messages.js";
+import Profile from "../profile/Profile.js";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 class Navigation extends Component {
@@ -14,10 +14,10 @@ class Navigation extends Component {
       <Router>
         <Switch>
           <Route path="/" exact component={Login} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/main" component={Main} />
-          <Route path="/messages" component={Messages} />
-          <Route path="/profile/:handle" component={Profile} />
+          <Route path="/signup" exact component={Signup} />
+          <Route path="/Main" exact component={Main} />
+          <Route path="/Messages" exact component={Messages} />
+          <Route path="/Profile/:handle" exact component={Profile} />
         </Switch>
       </Router>
     );

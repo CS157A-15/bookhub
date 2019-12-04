@@ -51,7 +51,7 @@ class NavbarPage extends Component {
                 <MDBNavLink to="/Main">Home</MDBNavLink>
               </MDBNavItem >
               <MDBNavItem active>
-                <MDBNavLink to="/Profile">Profile</MDBNavLink>
+              <MDBNavLink to="/Profile">Profile</MDBNavLink>
               </MDBNavItem>
               <MDBNavItem active>
                 <MDBNavLink to="/Messages">Messages</MDBNavLink>

@@ -54,10 +54,10 @@ render() {
                 <MDBNavLink to="/Main">Home</MDBNavLink>
               </MDBNavItem>
               <MDBNavItem>
-                <MDBNavLink to="#!">Profile</MDBNavLink>
+                <MDBNavLink to="/Profile">Profile</MDBNavLink>
               </MDBNavItem>
               <MDBNavItem>
-                <MDBNavLink to="#!">Messages</MDBNavLink>
+                <MDBNavLink to="/Messages">Messages</MDBNavLink>
               </MDBNavItem>
             </MDBNavbarNav>
             <MDBNavbarNav right>
