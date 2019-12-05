@@ -10,14 +10,20 @@ import {
   MDBCardText,
   MDBCol,
   MDBCarouselItem,
-  MDBView
+  MDBView,
+  MDBInput
 } from 'mdbreact';
+import UserAuth from '../../user_auth';
 import Navbar from '../navbar/navbar.js';
 import CollapseButton from './../../component/CollapseButton.js';
 import Upload from './../../component/UploadBox.js';
 import CarouselItem from '../../component/Carousel.js';
 import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
+import Typography from '@material-ui/core/Typography';
+import Box from '@material-ui/core/Box';
+import Popover from '@material-ui/core/Popover';
+import PopupState, { bindTrigger, bindPopover } from 'material-ui-popup-state';
 
 
 
@@ -36,7 +42,9 @@ class Main extends Component {
       dropdownlist: [],
       query_dept: undefined,
       query_course: undefined,
-      searchInput: undefined
+      searchInput: undefined,
+      sendMessage: "",
+      messageReceiver: ''
     };
   }
 
@@ -280,12 +288,73 @@ class Main extends Component {
                 <li className="list-group-item"> Type: {book_type}</li>
                 <li className="list-group-item"> Price: ${price}</li>
               </ul>
-              <MDBBtn className="btn btn-primary">Contact</MDBBtn>
+              {/* variant="popover" */}
+              <PopupState  variant="popover" popupId="demo-popup-popover">
+              {popupState => (
+                <div>
+                  <Button  color="primary" {...bindTrigger(popupState)}>
+                    Contact
+                  </Button>
+                  <Popover
+                    {...bindPopover(popupState)}
+                    anchorOrigin={{
+                      height: "100%",
+                      width: "50vw",
+                      vertical: 'bottom',
+                      horizontal: 'center',
+                    }}
+                    transformOrigin={{
+                      height: "100%",
+                      width: "50vw",
+                      vertical: 'top',
+                      horizontal: 'center',
+                    }}
+                  >
+                     
+                    <Box p={5}>
+                     <p align="top"> Message</p>
+                     {/* onChange={e =>this.setState({sendMessage: e.target.value})} */}
+                    <input id="message_box" type="textbox" rows="5" label="Type you message" onChange={e =>this.setState({sendMessage: e.target.value})}  />
+                    <Button  color="primary" onClick={this.message.bind(this,{list_id})}>Send</Button>
+                    </Box>
+                  </Popover>
+                </div>
+              )}
+            </PopupState>
+
+              {/* <button className="btn btn-primary" onClick={this.message.bind(this,{list_id})}>Contact</button> */}
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
       </div>
     );
+
+    async message(list_id){
+      console.log(list_id.list_id);
+      console.log(this.state.sendMessage);
+      document.getElementById("message_box").value="";
+      await fetch(`http://localhost:4000/bookOwner?list_id=${list_id.list_id}`)
+      .then(res => res.json())
+      .then(res => res.data.map((p)=> this.setState({messageReceiver: p.email})))
+      .catch(err => console.error(err));
+
+
+      console.log("message ",this.state.sendMessage);
+      await fetch(`http://localhost:4000/sendMessage?message=${this.state.sendMessage}`)
+      .then(res => res.json())
+      .catch(err => console.error(err));
+ 
+      console.log("sender", UserAuth.getEmail());
+      await fetch(`http://localhost:4000/sender?sender_email=${UserAuth.getEmail()}`)
+      .then(res => res.json())
+      .catch(err => console.error(err));
+
+      console.log("receiver",this.state.messageReceiver);
+      await fetch(`http://localhost:4000/receiver?receiver_email=${this.state.messageReceiver}`)
+      .then(res => res.json())
+      .catch(err => console.error(err));
+    }
+
   //----------------------- Handling the file upload-------------------------------------
   handleImageChange = async (e) => {
     e.preventDefault();

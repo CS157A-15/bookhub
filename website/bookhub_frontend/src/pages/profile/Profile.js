@@ -18,21 +18,25 @@ class Profile extends Component {
   }
 
   componentDidMount() {
+    this.getUserListing();
+  }
+
+  getUserListing(){
     fetch(`http://localhost:4000/profile?email=${UserAuth.getEmail()}`) // user info
-      .then(res => res.json())
-      .then(data => {
-        this.setState({
-          user: data[0].username,
-          email: data[0].email
-        });
+    .then(res => res.json())
+    .then(data => {
+      this.setState({
+        user: data[0].username,
+        email: data[0].email
       });
-    fetch(`http://localhost:4000/userListings?email=${UserAuth.getEmail()}`) // user listings
-      .then(res => res.json())
-      .then(data => {
-        this.setState({
-          listings: data
-        });
+    });
+  fetch(`http://localhost:4000/userListings?email=${UserAuth.getEmail()}`) // user listings
+    .then(res => res.json())
+    .then(data => {
+      this.setState({
+        listings: data
       });
+    });
   }
 
   render() {
@@ -51,6 +55,7 @@ class Profile extends Component {
             bookPrice={listing.price}
             listID={listing.list_id}
             email={UserAuth.getEmail()}
+            listings={listings}
           />
         </div>
       );

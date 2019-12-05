@@ -76,7 +76,6 @@ app.get("/userListings", (req, res) => {
     }
   );
 });
-
 app.get("/deleteListing", (req, res) => {
   const { email, listID } = req.query;
   db.query(
@@ -322,6 +321,20 @@ app.get('/addLists', (req, res) => {
   });
 });
 
+app.get('/bookOwner', (req, res) => {
+  const {list_id} = req.query;
+  db.query(`SELECT email FROM list WHERE list_id =${list_id}`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
 app.get('/conversation', (req, res) => {
   const {email} = req.query;
   db.query(`(SELECT DISTINCT sender_email 
@@ -330,90 +343,83 @@ app.get('/conversation', (req, res) => {
     ORDER BY date) UNION (SELECT DISTINCT receiver_email 
     FROM messages NATURAL JOIN sender NATURAL JOIN receiver 
     WHERE sender.sender_email = '${email}'
-    ORDER BY date)`,
-    (err, results) => {
-      if (err) {
-        return res.send(err);
-      } else {
-        return res.json({
-          data: results
-        });
+    ORDER BY date)`
+    , (err, results) =>{
+      if(err){
+          return res.send(err)
       }
-    }
-  );
+      else {
+          return res.json({
+              data: results
+          })
+      }
+  });
 });
 
-app.get("/messages", (req, res) => {
-  const { email, otheremail } = req.query;
-  db.query(
-    `SELECT * 
+
+app.get('/messages', (req, res) => {
+    const {email, otheremail} = req.query;
+    db.query(`SELECT * 
     FROM messages NATURAL JOIN sender NATURAL JOIN receiver 
     WHERE (sender.sender_email = '${email}'  AND receiver.receiver_email = '${otheremail}')
     OR (sender.sender_email = '${otheremail}' AND receiver.receiver_email = '${email}') 
-    ORDER BY date;`,
-    (err, results) => {
-      if (err) {
-        return res.send(err);
-      } else {
-        return res.json({
-          data: results
-        });
-      }
-    }
-  );
+    ORDER BY date;`, (err, results) =>{
+        if(err){
+            return res.send(err)
+        }
+        else {
+            return res.json({
+                data: results
+            })
+        }
+    });
 });
 // INSERT INTO receiver(receiver_email) VALUES( '${receiver_email}');
 // INSERT INTO sender_email(sender_email) VALUES( '${sender_email}')
 
-app.get("/sendMessage", (req, res) => {
-  console.log("sent message");
-  const { message } = req.query;
-  db.query(
-    `INSERT INTO messages(content) VALUES('${message}')`,
-    (err, results) => {
-      if (err) {
-        return res.send(err);
-      } else {
-        return res.json({
-          data: results
-        });
-      }
+app.get('/sendMessage', (req, res) => {
+  console.log('sent message');
+  const {message } = req.query;
+  db.query(`INSERT INTO messages(content) VALUES('${message}')`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
     }
-  );
+  });
 });
 
-app.get("/receiver", (req, res) => {
-  console.log("sent receiver");
-  const { receiver_email } = req.query;
-  db.query(
-    `INSERT INTO receiver(receiver_email) VALUES( '${receiver_email}')`,
-    (err, results) => {
-      if (err) {
-        return res.send(err);
-      } else {
-        return res.json({
-          data: results
-        });
-      }
+app.get('/receiver', (req, res) => {
+  console.log('sent receiver');
+  const {receiver_email} = req.query;
+  db.query(`INSERT INTO receiver(receiver_email) VALUES( '${receiver_email}')`, (err, results) => {
+    if (err) {
+      return res.send(err);
     }
-  );
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
 });
 
-app.get("/sender", (req, res) => {
-  console.log("sent sender");
-  const { sender_email } = req.query;
-  db.query(
-    `INSERT INTO sender(sender_email) VALUES( '${sender_email}')`,
-    (err, results) => {
-      if (err) {
-        return res.send(err);
-      } else {
-        return res.json({
-          data: results
-        });
-      }
+app.get('/sender', (req, res) => {
+  console.log('sent sender');
+  const { sender_email} = req.query;
+  db.query(`INSERT INTO sender(sender_email) VALUES( '${sender_email}')`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
     }
-  );
+  });
 });
 
 app.listen("4000", () => {

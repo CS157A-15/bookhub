@@ -127,12 +127,12 @@ class Messages extends Component {
         if(this.state.conversationSelected === 1){
             return (
                 <div>
-                    <div className="chat">
+                    <div id= "chat-scroll" className="chat" >
                         {this.state.messages.map(this.renderMessages)}
                     </div>
                     <div>
                         <div id="input-area">
-                        <MDBInput name="text_input" label="Type Your Message" rows="1" class="md-textarea form-control" style= {{width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
+                        <input name="text_input" type="textarea" label="Type Your Message" class="md-textarea form-control" style= {{height:"70px",width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
                         </div>
                         <div id="send">
                             <button className="btn btn-light" style= {{align: "center"}} type="submit" onClick={this.sendMessage}> Send</button>

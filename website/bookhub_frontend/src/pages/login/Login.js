@@ -99,7 +99,7 @@ class Login extends Component {
       ))
       )))
       
-      if(this.state.pass === this.state.user.password){
+      if(this.state.pass === this.state.user.password && this.state.pass !== ""){
         UserAuth.setUsername(this.state.username);
         UserAuth.setEmail(this.state.email);
         UserAuth.setAuth(true);
