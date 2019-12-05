@@ -69,6 +69,16 @@ function UploadBox(props) {
     </Modal>
   );
 }
+// function uploading(){
+//   fetch(`http://localhost:4000/uploadfile?useremail='${UserAuth.getEmail}'`)
+//     .then(res => res.json())
+//     .then(res => {
+//     })
+//     .catch(err => console.error(err));
+
+// }
+
+
 // props.onHide
 function addListing(event) {
   event.preventDefault();

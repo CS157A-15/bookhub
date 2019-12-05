@@ -185,8 +185,11 @@ app.get("/addUser", (req, res) => {
   });
 });
 
+let useremail;
+
 app.get("/login", (req, res) => {
   const { email } = req.query;
+  useremail = email;
   db.query(`SELECT * FROM users WHERE email = '${email}'`, (err, results) => {
     if (err) {
       return res.send(err);
@@ -200,6 +203,7 @@ app.get("/login", (req, res) => {
 
 //list_id that will be used to name the picture and add to list table
 let list_id;
+
 
 app.get("/addListing", (req, res) => {
   const {
