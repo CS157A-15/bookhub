@@ -7,6 +7,7 @@ import './UploadBox.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import UserAuth from '../../user_auth';
 
 function UploadBox(props) {
   return (
@@ -26,7 +27,6 @@ function UploadBox(props) {
         <Container>
           <Row>
             <Col>
-            <meta httpEquiv="Content-Security-Policy" content="default-src 'self'"></meta>
               <form>
 
                 <input type="text" name="bookname" /><p>Book name:</p>
@@ -53,10 +53,8 @@ function UploadBox(props) {
             </Col>
             <Col>
               <p>Upload pictures</p>
-              {/* <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => handleImageChange(e)} /> */}
-
               <form action="http://localhost:4000/uploadfile" method="POST" encType="multipart/form-data">
-                <input type="file" name="fileToUpload" id="fileToUpload"/>
+                <input type="file" name="fileToUpload" id="fileToUpload" />
                 <input type="submit" value="Upload Image" name="submit"></input>
                 {/* <Button as="input" type="submit" value="Submit" /> */}
               </form>
@@ -65,63 +63,55 @@ function UploadBox(props) {
         </Container>
 
       </Modal.Body>
-          {/* <Modal.Footer>
-        <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer> */}
+      <Modal.Footer>
+        <Button onClick={ (e) => {addListing(e); props.onHide} }>Close</Button>
+      </Modal.Footer>
     </Modal>
-        );
-      }
-      
+  );
+}
+// props.onHide
 function addListing(event) {
-          event.preventDefault();
-        console.log("in add listiing");
-        const name = document.getElementsByName("bookname")[0];
-        const edition = document.getElementsByName("bookedition")[0];
-        const isbn = document.getElementsByName("bookisbn")[0];
-        const price = document.getElementsByName("bookprice")[0];
-        const type = document.getElementsByName("booktype")[0];
-        const condition = document.getElementsByName("bookcondition")[0];
-      
+  event.preventDefault();
+  console.log("in add listiing");
+  const name = document.getElementsByName("bookname")[0];
+  const edition = document.getElementsByName("bookedition")[0];
+  const isbn = document.getElementsByName("bookisbn")[0];
+  const price = document.getElementsByName("bookprice")[0];
+  const type = document.getElementsByName("booktype")[0];
+  const condition = document.getElementsByName("bookcondition")[0];
+
   if (name && edition && isbn && price && type && condition) {
-          console.log("book attributes", name.value, edition.value, isbn.value,
-            price.value, type.value, condition.value);
-  
-    fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
-          .then(res => res.json())
+    fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}
+    &bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}&user=${UserAuth.getEmail()}`)
+      .then(res => res.json())
       .then(res => {
-        })
-        .catch(err => console.error(err));
-  
-  
-      //clearing form input
-      name.value = "";
-      edition.value = "";
-      isbn.value = "";
-      price.value = "";
-      type.value = "";
-      condition.value = "";
-    }
-  };
-  
+      })
+      .catch(err => console.error(err));
+
+
+    //clearing form input
+    name.value = "";
+    edition.value = "";
+    isbn.value = "";
+    price.value = "";
+    type.value = "";
+    condition.value = "";
+  }
+};
+
 export default function Upload() {
   const [modalShow, setModalShow] = React.useState(false);
-      
-        return (
+
+  return (
     <ButtonToolbar>
-          <Button id="listbook" variant="primary" onClick={() => setModalShow(true)}>
-            List a book
+      <Button id="listbook" variant="primary" onClick={() => setModalShow(true)}>
+        List a book
           </Button>
 
-          <UploadBox
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-          />
-        </ButtonToolbar>
-        );
-      }  
-      
-      
-function uploadFiles (fileName, fileData) {
-          fetch(`http://localhost:4000/upload?fileData=${fileData}&fileName=${fileName}`, { mode: 'no-cors' })
-            .catch(err => console.error(err));
-};
+      <UploadBox
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
+    </ButtonToolbar>
+  );
+}

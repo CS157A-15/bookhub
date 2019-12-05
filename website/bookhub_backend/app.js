@@ -198,6 +198,9 @@ app.get("/login", (req, res) => {
   });
 });
 
+//list_id that will be used to name the picture and add to list table
+let list_id;
+
 app.get("/addListing", (req, res) => {
   const {
     bookName,
@@ -205,7 +208,8 @@ app.get("/addListing", (req, res) => {
     bookISBN,
     bookPrice,
     bookType,
-    bookCondition
+    bookCondition,
+    useremail
   } = req.query;
   console.log(
     "in book listing",
@@ -216,9 +220,24 @@ app.get("/addListing", (req, res) => {
     bookType,
     bookCondition
   );
+
+  // let list_id;
+
   const INSERT_USER_QUERY = `INSERT INTO listedbooks(title, edition, isbn, price, book_type, book_condition) 
 	VALUES ('${bookName}','${bookEdition}','${bookISBN}','${bookPrice}', '${bookType}', '${bookCondition}')`;
   db.query(INSERT_USER_QUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      list_id = results.list_id;
+      return res.json({
+        data: results
+      });
+    }
+  });
+
+  const  LISTSQUERY =`INSERT INTO list (email, list_id) VALUES ('${useremail}', '${list_id}')`;
+  db.query(LISTSQUERY, (err, results) => {
     if (err) {
       return res.send(err);
     } else {
@@ -226,21 +245,21 @@ app.get("/addListing", (req, res) => {
         data: results
       });
     }
-    console.log("successfully added book to listing");
   });
+
 });
 
 // handling the file upload
 const storage = multer.diskStorage({
   destination: '../uploads',
   filename: function(req, file, cb){
-    cb(null, file.fieldname+Date.now+path.extname(file.originalname));
+    cb(null, list_id+"-"+Date.now()+path.extname(file.originalname));
   }
 });
 
 const upload = multer({
   storage: storage,
-  limits:{fileSize: 1000000},
+  // limits:{fileSize: 1000000},
   fileFilter: function(req, file, cb) {
     checkFileType(file, cb);
   }
@@ -269,6 +288,34 @@ app.post('/uploadfile', (req, res) => {
       } else {
         console.log("file uploaded successfully");
       }
+    }
+  });
+
+  const  LISTSQUERY =`INSERT INTO usespic (list_id, filepath) VALUES ('${useremail}', '${req.file.filename}')`;
+  db.query(LISTSQUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+
+});
+
+app.get('/fileForListing', (req, res) => {
+  const {
+    picnumber
+  } = req.query;
+  
+  db.query(`SELECT filepath FROM usespic WHERE '%${picnumber}%'`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
     }
   });
 });

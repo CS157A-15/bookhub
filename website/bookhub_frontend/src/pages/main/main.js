@@ -120,7 +120,7 @@ class Main extends Component {
   };
 
   enterPressed = event => {
-    var code = event.keyCode || event.which;
+    let code = event.keyCode || event.which;
     if (code === 13) {
       //13 is the enter keycode
       event.preventDefault();
@@ -160,6 +160,24 @@ class Main extends Component {
     this.setState({ query_dept: dept });
     this.getRequestedBooksDept(dept);
   };
+
+  //-----------------------Getting the pictures for listing -------------------------------------
+  getBookPic = async (list_id) => {
+    let path;
+    fetch(
+      `http://localhost:4000/searchResults?picnumber=${list_id}`
+    )
+      .then(res => res.json())
+      .then(res => {
+        path = res.data;
+      })
+      .catch(err => console.error(err));
+    if(path == undefined) {
+      return "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg";
+    } else {
+      return path;
+    }
+  }
 
   //----------------------- Rendering the sidebar dropdown -------------------------------------
   renderDropdown = () => {
@@ -248,23 +266,23 @@ class Main extends Component {
 
   //----------------------- Creating cards book data -------------------------------------
   renderBooks = ({
-    list_id,
+    list_id,  //using this to get the picture
     title,
     edition,
     isbn,
     price,
     book_type,
-    book_condition
-  }) => (
-    
+  }) => {
+    let picpath = this.getBookPic(list_id);
+    return (
       <div className="card-inline" key={list_id}>
         <MDBCol>
           <MDBCard style={{ width: '17rem' }}>
-            {/* <MDBCardImage
+            <MDBCardImage
               className="img-fluid"
-              src="https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"
+              src= {picpath}//"https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"
               waves
-            /> */}
+            />
             <CarouselItem>
             </CarouselItem>
             <MDBCardBody>
@@ -284,107 +302,9 @@ class Main extends Component {
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
-      </div>
-    );
-  //----------------------- Handling the file upload-------------------------------------
-  handleImageChange = async (e) => {
-    e.preventDefault();
+      </div>);
+    };
 
-    let reader = new FileReader();
-    let files = e.target.files;
-    let base64 = "";
-    reader.readAsDataURL(files[0]);
-
-    // let blob = this.b64toBlob(files);
-    // FileSaver.saveAs(blob, "image.png");
-    // let object = new ActiveXObject("Scripting.FileSystemObject");
-
-    reader.onloadend = () => {
-      // this.setState({
-      //   file: file,
-      //   imagePreviewUrl: reader.result
-      // })'
-
-      base64 = reader.result;
-
-      console.log(base64);
-
-      // const imageBuffer = this.decodeBase64Image(base64);
-      // console.log("image buffer ", imageBuffer);
-
-      let base64Data = base64.replace(/^data:image\/\w+;base64,/, "");
-      console.log(base64Data);
-
-      const buf = new Buffer(base64Data,'base64');
-      console.log("buf", buf);
-      // const buf = new Buffer(base64,'base64');
-      // const info = buf.toString('base64');
-      this.uploadFiles("name", buf); //sending the data to the backend
-
-      // let base64Image = base64.split(';base64,').pop();
-      // fs.writeFile('image.png', base64Image, { encoding: 'base64' }, function (err) {
-      //   console.log('File created');
-      // });
-    }
-  }
-
-  //https://stackoverflow.com/questions/20267939/nodejs-write-base64-image-file
-  decodeBase64Image(dataString) {
-    var matches = dataString.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/),
-      response = {};
-
-    if (matches.length !== 3) {
-      return new Error('Invalid input string');
-    }
-
-    response.type = matches[1];
-
-    response.data = Buffer.from(matches[2]).toString('base64');
-    console.log("matches[2]", matches[2]);
-
-    return response;
-  }
-
-  //https://stackoverflow.com/questions/27980612/converting-base64-to-blob-in-javascript
-  b64toBlob(dataURI) {
-
-    // let byteString = atob(dataURI.split(',')[1]);
-    // let ab = new ArrayBuffer(byteString.length);
-    // let ia = new Uint8Array(ab);
-    let imgType = 'image/jpeg';
-    const sliceSize = 512;
-
-    // for (let i = 0; i < byteString.length; i++) {
-    //     ia[i] = byteString.charCodeAt(i);
-    // }
-
-
-    const byteCharacters = atob(dataURI);
-    const byteArrays = [];
-
-    for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-      const slice = byteCharacters.slice(offset, offset + sliceSize);
-
-      const byteNumbers = new Array(slice.length);
-      for (let i = 0; i < slice.length; i++) {
-        byteNumbers[i] = slice.charCodeAt(i);
-      }
-
-      const byteArray = new Uint8Array(byteNumbers);
-
-      byteArrays.push(byteArray);
-    }
-
-    if (dataURI.contains("jpeg")) {
-      imgType = 'image/jpeg';
-    } else if (dataURI.contains("png")) {
-      imgType = 'image/png';
-    }
-
-    return new Blob(byteArrays, { type: imgType });
-  }
-
-  uploadHandler = () => { }
   //----------------------- Handling the file download after upload -------------------------------------
 
 
