@@ -46,7 +46,12 @@ class Profile extends Component {
     const profileListings = listings.map(listing => {
       return (
         <div className="col-md-4 pb-3" key={listing.list_id}>
-          <Card bookTitle={listing.title} bookPrice={listing.price} />
+          <Card
+            bookTitle={listing.title}
+            bookPrice={listing.price}
+            listID={listing.list_id}
+            email={UserAuth.getEmail()}
+          />
         </div>
       );
     });
