@@ -82,7 +82,6 @@ app.get("/deleteListing", (req, res) => {
   db.query(
     `DELETE FROM List WHERE email = '${email}' AND list_id = '${listID}'`,
     (err, result) => {
-      console.log(`${email} ${listID}`);
       if (err) throw err;
       res.send("Removed Listing with User");
     }
