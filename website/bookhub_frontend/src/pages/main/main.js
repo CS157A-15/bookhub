@@ -12,11 +12,12 @@ import {
   MDBCarouselItem,
   MDBView
 } from 'mdbreact';
-import Navbar from './navbar/navbar';
+import Navbar from '../navbar/navbar.js';
 import CollapseButton from './../../component/CollapseButton.js';
 import Upload from './../../component/UploadBox.js';
 import CarouselItem from '../../component/Carousel.js';
 import Image from 'react-bootstrap/Image';
+import Button from 'react-bootstrap/Button';
 
 
 
@@ -164,7 +165,11 @@ class Main extends Component {
   renderDropdown = () => {
     let dropdown = this.state.dropdownlist;
     let dept = 'blah';
-    let button_list = [];
+    let button_list = [
+      <div onClick={() => this.getBooks()}>
+              <Button>All listed books</Button>
+            </div>
+    ];
     let li_array = [];
     if (dropdown.length > 0) {
       for (let i = 0; i < dropdown.length; i++) {

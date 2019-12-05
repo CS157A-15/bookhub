@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import './messages.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import {Link} from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Redirect } from 'react-router';
 import Navbar from '../navbar/navbar';
 import UserAuth from '../../user_auth';
 import { MDBBtn, MDBInput } from 'mdbreact';
 
 class Messages extends Component {
-    constructor(props){
+    constructor(props) {
         super(props)
         this.state = {
             user_email:'',
@@ -22,7 +22,7 @@ class Messages extends Component {
         }
     }
 
-    componentWillMount(){
+    componentWillMount() {
         if (UserAuth.getAuth() === true) {
             this.setState({user_email: UserAuth.getEmail(), username: UserAuth.getUsername(), auth: UserAuth.getAuth(),conversationSelected: 0});
             // this.getSentMessages();
@@ -132,7 +132,7 @@ class Messages extends Component {
                     </div>
                     <div>
                         <div id="input-area">
-                        <MDBInput id="text_input" label="Type Your Message" rows="1" class="md-textarea form-control" style= {{width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
+                        <MDBInput name="text_input" label="Type Your Message" rows="1" class="md-textarea form-control" style= {{width: "70vw"}} onChange={e =>this.setState({sendMessage: e.target.value})}/>
                         </div>
                         <div id="send">
                             <button className="btn btn-light" style= {{align: "center"}} type="submit" onClick={this.sendMessage}> Send</button>
@@ -163,7 +163,8 @@ class Messages extends Component {
         .catch(err => console.error(err));
         this.getMessages(this.state.other_email);
         
-        this.text_input.value = "";
+        const text = document.getElementsByName("text_input")[0];
+        text.value = "";
     }
 }
 export default Messages;
