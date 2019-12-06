@@ -7,7 +7,7 @@ import './UploadBox.css';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import UserAuth from '../../user_auth';
+import UserAuth from '../user_auth';
 
 function UploadBox(props) {
   return (
@@ -64,7 +64,7 @@ function UploadBox(props) {
 
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={ (e) => {addListing(e); props.onHide} }>Close</Button>
+        <Button onClick={ props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );

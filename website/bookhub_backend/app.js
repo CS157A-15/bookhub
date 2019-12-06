@@ -69,7 +69,7 @@ app.get("/department", (req, res) => {
 app.get("/userListings", (req, res) => {
   const { email } = req.query;
   db.query(
-    `SELECT * FROM List NATURAL JOIN ListedBooks WHERE email = '${email}'`,
+    `SELECT * FROM List NATURAL JOIN listedBooks WHERE email = '${email}'`,
     (err, result) => {
       if (err) throw err;
       res.send(result);
@@ -255,7 +255,7 @@ app.get("/addListing", (req, res) => {
 
 // handling the file upload
 const storage = multer.diskStorage({
-  destination: '../uploads',
+  destination: '../bookhub_frontend/public/uploads',//'../uploads',
   filename: function(req, file, cb){
     cb(null, list_id+"-"+Date.now()+path.extname(file.originalname));
   }
@@ -295,25 +295,56 @@ app.post('/uploadfile', (req, res) => {
     }
   });
 
-  const  LISTSQUERY =`INSERT INTO usespic (list_id, filepath) VALUES ('${useremail}', '${req.file.filename}')`;
-  db.query(LISTSQUERY, (err, results) => {
-    if (err) {
-      return res.send(err);
-    } else {
-      return res.json({
-        data: results
-      });
-    }
-  });
-
+  // const  LISTSQUERY =`INSERT INTO usespic (list_id, filepath) VALUES ('${useremail}', '${req.file.filename}')`;
+  // db.query(LISTSQUERY, (err, results) => {
+  //   if (err) {
+  //     return res.send(err);
+  //   } else {
+  //     return res.json({
+  //       data: results
+  //     });
+  //   }
+  // });
 });
 
 app.get('/fileForListing', (req, res) => {
   const {
     picnumber
   } = req.query;
-  
-  db.query(`SELECT filepath FROM usespic WHERE '%${picnumber}%'`, (err, results) => {
+  // console.log("pcinumber",picnumber);
+  db.query(`SELECT filepath FROM usespic WHERE filepath LIKE'${picnumber}-%'`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      // console.log("pcinumber res",results);
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+app.get('/getAllPics', (req, res) => {
+  const {
+    picnumber
+  } = req.query;
+  // console.log("pcinumber",picnumber);
+  db.query(`SELECT * FROM usespic`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      // console.log("pcinumber res",results);
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+
+
+app.get('/mostCurrentListID', (req, res) => {
+  db.query(`SELECT list_id FROM listedbooks ORDER BY list_id DESC LIMIT 1`, (err, results) => {
     if (err) {
       return res.send(err);
     } else {

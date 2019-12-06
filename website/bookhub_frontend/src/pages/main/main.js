@@ -18,14 +18,13 @@ import Upload from './../../component/UploadBox.js';
 import CarouselItem from '../../component/Carousel.js';
 import Image from 'react-bootstrap/Image';
 import Button from 'react-bootstrap/Button';
+import Card from './../../component/Card.js';
+
 
 
 
 let books = [];
-const testImg = ["https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg",
-  "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg",
-  "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"];
-let citems =[];
+let picpaths = [];
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -34,10 +33,14 @@ class Main extends Component {
       depts: [],
       courses: [],
       dropdownlist: [],
+      pics: [],
       query_dept: undefined,
       query_course: undefined,
-      searchInput: undefined
+      searchInput: undefined,
+      picpath: undefined,
+      currentListID: 0
     };
+
   }
 
 
@@ -45,6 +48,8 @@ class Main extends Component {
     this.getBooks();
     this.getDepartments();
     this.getDropdownList();
+    this.getMostCurrentListID();
+    this.getPics();
   }
 
   getBooks = () => {
@@ -53,6 +58,16 @@ class Main extends Component {
       .then(res => {
         this.setState({ books: res.data });
         books = res.data;
+      })
+      .catch(err => console.error(err));
+  };
+
+  getPics = () => {
+    fetch('http://localhost:4000/getAllPics')
+      .then(res => res.json())
+      .then(res => {
+        this.setState({ pics: res.data });
+        picpaths= res.data;
       })
       .catch(err => console.error(err));
   };
@@ -94,8 +109,6 @@ class Main extends Component {
   };
 
   getSearchResults = async SQLParam => {
-    let q = `http://localhost:4000/searchResults?searchInput=${SQLParam}`;
-    console.log(q);
     fetch(
       `http://localhost:4000/searchResults?searchInput=${SQLParam}`
     )
@@ -109,10 +122,17 @@ class Main extends Component {
 
   };
 
-  uploadFiles = async (fileName, fileData) => {
-    fetch(`http://localhost:4000/upload?fileData=${fileData}&fileName=${fileName}`, { mode: 'no-cors' })
+  getMostCurrentListID = () => {
+    fetch(
+      `http://localhost:4000/mostCurrentListID`
+    )
+      .then(res => res.json())
+      .then(res => {
+        this.setState({ currentListID: res.data });
+        console.log("currentListID", this.state.currentListID[0].list_id);
+      })
       .catch(err => console.error(err));
-  };
+  }
 
   //----------------------------------- Handeling the serach ---------------------------------
   handleSearch = e => {
@@ -138,7 +158,7 @@ class Main extends Component {
       if (i === 0) {
         SQLSearchParam = SQLSearchParam.concat(searchWords[i]);
       } else {
-        SQLSearchParam = SQLSearchParam.concat("%20"+searchWords[i]);
+        SQLSearchParam = SQLSearchParam.concat("%20" + searchWords[i]);
       }
     }
 
@@ -162,21 +182,28 @@ class Main extends Component {
   };
 
   //-----------------------Getting the pictures for listing -------------------------------------
-  getBookPic = async (list_id) => {
+  getBookPic = async list_id => {
     let path;
-    fetch(
-      `http://localhost:4000/searchResults?picnumber=${list_id}`
+    await fetch(
+      `http://localhost:4000/fileForListing?picnumber=${list_id}`
     )
-      .then(res => res.json())
-      .then(res => {
-        path = res.data;
-      })
+      // .then(res => res.json())
+      // .then(res => {
+      //   path = res.data;
+      //   console.log("path", path[0].filepath);
+      //   // if (path == undefined) {
+      //   //   paths.push("https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg");
+      //   // } else {
+      //   //   if (!paths.includes(path)) {
+      //   //     paths.push("./uploads" + path.filepath);
+      //   //   }
+      //   // }
+      //   // console.log("paths", paths);
+      //   // console.log("IN HEREERERERE!!!!");
+      //   // return path[0].filepath;
+      // })
       .catch(err => console.error(err));
-    if(path == undefined) {
-      return "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg";
-    } else {
-      return path;
-    }
+
   }
 
   //----------------------- Rendering the sidebar dropdown -------------------------------------
@@ -185,8 +212,8 @@ class Main extends Component {
     let dept = 'blah';
     let button_list = [
       <div onClick={() => this.getBooks()}>
-              <Button>All listed books</Button>
-            </div>
+        <Button>All listed books</Button>
+      </div>
     ];
     let li_array = [];
     if (dropdown.length > 0) {
@@ -247,68 +274,113 @@ class Main extends Component {
   createCItemList(imgs) {
     let carouselItems = [];
     for (let i = 0; i < imgs.length; i++) {
-        // let cItem = 
-        carouselItems.push(
-            <MDBCarouselItem itemId={i + 1}>
-                <MDBView>
-                    <img
-                        className="d-block w-100"
-                        src={imgs[i]}
-                        id={"img"+i}
-                    />
-                </MDBView>
-            </MDBCarouselItem>
-        );
+      // let cItem = 
+      carouselItems.push(
+        <MDBCarouselItem itemId={i + 1}>
+          <MDBView>
+            <img
+              className="d-block w-100"
+              src={imgs[i]}
+              id={"img" + i}
+            />
+          </MDBView>
+        </MDBCarouselItem>
+      );
     }
     return carouselItems;
-}
-
+  }
 
   //----------------------- Creating cards book data -------------------------------------
-  renderBooks = ({
+  renderBooks = (
     list_id,  //using this to get the picture
     title,
     edition,
     isbn,
     price,
     book_type,
-  }) => {
-    let picpath = this.getBookPic(list_id);
-    return (
-      <div className="card-inline" key={list_id}>
-        <MDBCol>
-          <MDBCard style={{ width: '17rem' }}>
-            <MDBCardImage
-              className="img-fluid"
-              src= {picpath}//"https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"
-              waves
-            />
-            <CarouselItem>
-            </CarouselItem>
-            <MDBCardBody>
-              <MDBCardTitle>{title}</MDBCardTitle>
-              <MDBCardText>
-                Edition: {edition}, ISBN: {isbn}
-              </MDBCardText>
-              <ul className="list-group list-group-flush">
-                <li className="list-group-item">
-                  {' '}
-                  Book Condition: {book_condition}
-                </li>
-                <li className="list-group-item"> Type: {book_type}</li>
-                <li className="list-group-item"> Price: ${price}</li>
-              </ul>
-              <MDBBtn className="btn btn-primary">Contact</MDBBtn>
-            </MDBCardBody>
-          </MDBCard>
-        </MDBCol>
-      </div>);
-    };
+    book_condition
+  ) => {
+    // this.getBookPic(list_id)
+    // .then()
+    // .then(
+    //   (res) => {
+    //     console.log("in promise!!!!!", res);
+    //     picpath = res;
+    //   }
+    // );
+
+    let image, picpath;
+
+    // fetch(
+    //   `http://localhost:4000/fileForListing?picnumber=${list_id}`
+    // ).then(res => res.json())
+    //   .then(res => {
+    //     console.log("res", res.data[0].filepath);
+    //     picpath = String(res.data[0].filepath);
+    //     this.setState({ picpath: res.data[0].filepath });
+    //     console.log("picpath", picpath);
+
+    //   });
+
+    // return (<Card path={"../../../uploads/"+this.state.picpath} book={({list_id, title, edition, isbn, price, book_type, book_condition})}/>);
+
+    if (picpaths.length !== 0) {
+      const thePic = (element) => element.list_id === list_id;
+      const index = this.state.books.findIndex(thePic);
+      console.log("this.state.pics[index]", picpaths[index].filepath);
+      const path = (picpaths[index].filepath)?"../../../uploads/" +picpaths[index].filepath:
+      "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg";
+
+      return (
+        <div className="card-inline" key={title}>
+          <MDBCol>
+            <MDBCard style={{ width: '17rem' }}>
+              <MDBCardImage
+                className="img-fluid"
+                src={path}
+                // src={"../../../uploads/" + picpaths[index].filepath}
+                //this.state.picpath}//"../../../uploads/8-59473928754.jpg"
+                waves
+              />
+
+              <MDBCardBody>
+                <MDBCardTitle>{title}</MDBCardTitle>
+                <MDBCardText>
+                  Edition: {edition}, ISBN: {isbn}
+                </MDBCardText>
+                <ul className="list-group list-group-flush">
+                  <li className="list-group-item">
+                    {' '}
+                    Book Condition: {book_condition}
+                  </li>
+                  <li className="list-group-item"> Type: {book_type}</li>
+                  <li className="list-group-item"> Price: ${price}</li>
+                </ul>
+                <MDBBtn className="btn btn-primary">Contact</MDBBtn>
+              </MDBCardBody>
+            </MDBCard>
+          </MDBCol>
+        </div>);
+    }
+    else{
+      return (<div></div>);
+    }
+  };
 
   //----------------------- Handling the file download after upload -------------------------------------
 
 
   render() {
+    // let cards = [];
+    // if (this.state.books && this.state.books.length !== 0) {
+    //   for (let i = 0; i < this.state.currentListID; i = i + 1) {
+    //     // let b = this.state.books[i ];
+    //     cards.push(this.renderBooks(this.state.books[i ].list_id, this.state.books[i ].title,
+    //       this.state.books[i ].edition, this.state.books[i ].isbn, this.state.books[i ].price,
+    //       this.state.books[i ].book_type, this.state.books[i ].book_condition));
+    //   }
+    //   console.log(cards);
+    // }
     return (
       <div className="wrapper">
         <nav id="sidebar" align="center">
@@ -338,12 +410,14 @@ class Main extends Component {
         </nav>
 
         {/* <!-- Page Content  --> */}
-        {citems = this.createCItemList(testImg)}
+        {/* {citems = this.createCItemList(testImg)} */}
         <div id="content">
-          <Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} />
+          <div id="search"><Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} /></div>
           {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
-          <div className="card-inline">
-            {this.state.books.map(this.renderBooks)}
+          <div className="card-inline" id="cards">
+            {/* {cards} */}
+            {this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition))}
+            {/* {this.state.books.map(this.renderBooks())} */}
             {/* {<CarouselItem imgs={array}></CarouselItem>} */}
           </div>
         </div>
