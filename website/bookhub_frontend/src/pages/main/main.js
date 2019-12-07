@@ -471,7 +471,7 @@ class Main extends Component {
             />
             <h3>Bookhub</h3>
           </div>
-          <ul align="center" className="list-unstyled CTAs">
+          <ul className="list-unstyled CTAs">
             <li align="center">
               {/* <button type="button" className="btn btn-light">
                 Add Book

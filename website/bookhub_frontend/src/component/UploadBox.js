@@ -46,7 +46,8 @@ function UploadBox(props) {
                   <option value="paperback">paperback</option>
                   <option value="hardcover">hardcover</option>
                 </select><p>Book type</p>
-
+                <input type="text" name="bookdepartment" /> <p>Department</p>
+                <input type="text" name="bookcourse" />   <p>Course Number</p>
                 <input type="number" name="bookprice" />   <p>Listing Price</p>
                 <input type="submit" value="Submit" onClick={(e) => addListing(e)} />
                 {/* <Button onClick={addListing()}>Submit</Button> */}
@@ -82,10 +83,13 @@ async function addListing(event) {
   const price = document.getElementsByName("bookprice")[0];
   const type = document.getElementsByName("booktype")[0];
   const condition = document.getElementsByName("bookcondition")[0];
+  const department = document.getElementsByName("bookdepartment")[0];
+  const course = document.getElementsByName("bookcourse")[0];
 
-  if (name && edition && isbn && price && type && condition) {
+
+  if (name && edition && isbn && price && type && condition && department && course) {
           console.log("book attributes", name.value, edition.value, isbn.value,
-            price.value, type.value, condition.value);
+            price.value, type.value, condition.value, department.value, course.value);
     await fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
       .then(res => res.json())
       .catch(err => console.error(err));
@@ -98,6 +102,18 @@ async function addListing(event) {
       console.log(autoIncrementId);
 
       await fetch(`http://localhost:4000/addLists?email=${UserAuth.getEmail()}&id=${autoIncrementId}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+
+        await fetch(`http://localhost:4000/addDepartment?department=${department.value}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+
+        await fetch(`http://localhost:4000/addCourse?department=${department.value}&course=${course.value}`)
+        .then(res => res.json())
+        .catch(err => console.error(err));
+
+        await fetch(`http://localhost:4000/addUseFor?department=${department.value}&course=${course.value}&list_id=${autoIncrementId}`)
         .then(res => res.json())
         .catch(err => console.error(err));
 

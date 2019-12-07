@@ -464,6 +464,49 @@ app.get('/sender', (req, res) => {
   });
 });
 
+app.get('/addDepartment', (req, res) => {
+  const { department} = req.query;
+  db.query(`INSERT INTO department (dept_name) VALUE('${department}')`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+app.get('/addCourse', (req, res) => {
+  const { department, course} = req.query;
+  db.query(`INSERT INTO courses (dept_name, course_name) VALUES('${department}','${course}')`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+
+app.get('/addUseFor', (req, res) => {
+  const { department, course, list_id} = req.query;
+  db.query(`INSERT INTO usefor (dept_name, course_name, list_id) VALUES('${department}','${course}',${list_id})`, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } 
+    else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
 app.listen("4000", () => {
   console.log("Server started on port 4000");
 });
