@@ -9,7 +9,11 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import UserAuth from '../user_auth';
 
-function UploadBox(props) {
+
+let prevListId = 0;
+let currListId = 0;
+// let filepath = "";
+function UploadBox(props, { list_id }) {
   return (
     <Modal
       {...props}
@@ -27,7 +31,15 @@ function UploadBox(props) {
         <Container>
           <Row>
             <Col>
-            <meta httpEquiv="Content-Security-Policy" content="default-src 'self'"></meta>
+              <p>1. Upload pictures</p>
+              <form action={"http://localhost:4000/uploadfile?listId=" + currListId} method="POST" encType="multipart/form-data">
+                <input type="file" name="fileToUpload" id="fileToUpload" />
+                <input type="submit" value="Upload Image" name="submit"></input>
+                {/* <Button as="input" type="submit" value="Submit" /> */}
+              </form>
+            </Col>
+            <Col>
+              <p>2. Enter book information</p>
               <form>
 
                 <input type="text" name="bookname" /><p>Book name:</p>
@@ -52,23 +64,13 @@ function UploadBox(props) {
                 {/* <Button onClick={addListing()}>Submit</Button> */}
               </form>
             </Col>
-            <Col>
-              <p>Upload pictures</p>
-              {/* <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => handleImageChange(e)} /> */}
-
-              <form action="http://localhost:4000/uploadfile" method="POST" encType="multipart/form-data">
-                <input type="file" name="fileToUpload" id="fileToUpload"/>
-                <input type="submit" value="Upload Image" name="submit"></input>
-                {/* <Button as="input" type="submit" value="Submit" /> */}
-              </form>
-            </Col>
           </Row>
         </Container>
 
       </Modal.Body>
-          {/* <Modal.Footer>
+      <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer> */}
+      </Modal.Footer>
     </Modal>
         );
       }
@@ -103,6 +105,31 @@ async function addListing(event) {
         .then(res => res.json())
         .catch(err => console.error(err));
 
+
+        console.log("UserAuth.getEmail()", UserAuth.getEmail());
+        console.log("prevListId", prevListId[0].list_id);
+        console.log("currListId", currListId);
+        // console.log("filepath", filepath[0].filepath);
+      
+        fetch(`http://localhost:4000/addListTable?useremail=${UserAuth.getEmail()}&listId=${currListId}`)
+          .then(res => res.json())
+          .then(res => {
+          })
+          .catch(err => console.error(err));
+      
+          fetch(`http://localhost:4000/addUploadTable?filepath=${currListId+".jpg"}`)
+          .then(res => res.json())
+          .then(res => {
+          })
+          .catch(err => console.error(err));
+      
+          fetch(`http://localhost:4000/addUsesPicTable?listId=${currListId}&filepath=${currListId+".jpg"}`)
+            .then(res => res.json())
+            .then(res => {
+            })
+            .catch(err => console.error(err));
+      
+
       //clearing form input
       name.value = "";
       edition.value = "";
@@ -113,25 +140,63 @@ async function addListing(event) {
     }
   };
   
+
+
+// function addToListTable(event) {
+//   event.preventDefault();
+//   console.log("UserAuth.getEmail()", UserAuth.getEmail());
+//   console.log("listId", listId);
+
+//   fetch(`http://localhost:4000/addListTable?username=${UserAuth.getEmail()}&listId=${listId}`)
+//     .then(res => res.json())
+//     .then(res => {
+//     })
+//     .catch(err => console.error(err));
+
+// };
+
+function getMostCurrentListID() {
+  fetch(
+    `http://localhost:4000/mostCurrentListID`
+  )
+    .then(res => res.json())
+    .then(res => {
+      prevListId = res.data;
+      currListId = prevListId[0].list_id + 1;
+      console.log("in list id function", prevListId);
+    })
+    .catch(err => console.error(err));
+
+}
+
+//gets the file name for current listing is there is any so we can add it to the table
+// function getFileForListing (id) {
+//   fetch(
+//     `http://localhost:4000/fileForListing?listId=${id}`
+//   )
+//     .then(res => res.json())
+//     .then(res => {
+//       filepath = res.data;
+//       console.log("filepath", filepath[0].filepath);
+//     })
+//     .catch(err => console.error(err));
+// }
+
 export default function Upload() {
   const [modalShow, setModalShow] = React.useState(false);
-      
-        return (
+  getMostCurrentListID();
+  // getFileForListing(prevListId);
+
+  return (
     <ButtonToolbar>
-          <Button id="listbook" variant="primary" onClick={() => setModalShow(true)}>
-            List a book
+      <Button id="listbook" onClick={() => setModalShow(true)}>
+        List a book
           </Button>
 
-          <UploadBox
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-          />
-        </ButtonToolbar>
-        );
-      }  
-      
-      
-function uploadFiles (fileName, fileData) {
-          fetch(`http://localhost:4000/upload?fileData=${fileData}&fileName=${fileName}`, { mode: 'no-cors' })
-            .catch(err => console.error(err));
-};
+      <UploadBox
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
+    </ButtonToolbar>
+  );
+}
