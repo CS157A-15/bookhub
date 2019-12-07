@@ -288,10 +288,10 @@ class Main extends Component {
   ) => {
 
     if (this.state.pics) { //picpaths.length !== 0
-      const thePic = (element) => element.list_id === list_id;
-      const index = this.state.books.findIndex(thePic);
-      // console.log("this.state.pics[index]", picpaths[index].filepath);
-      // const path1 = (picpaths[index].filepath)?"../../../uploads/" +picpaths[index].filepath:
+      const thePic = (element) => element.list_id === list_id ;
+      const index = this.state.pics.findIndex(thePic);
+      console.log("thPic", thePic);
+      console.log("this.state.pics[index]", picpaths[index]);
       let path = "../../../uploads/book_default.jpg";
 
       if(picpaths[index] !== undefined){
@@ -305,8 +305,6 @@ class Main extends Component {
               <MDBCardImage
                 className="img-fluid"
                 src={path}
-                // src={"../../../uploads/" + picpaths[index].filepath}
-                //this.state.picpath}//"../../../uploads/8-59473928754.jpg"
                 waves
               />
 
@@ -395,13 +393,12 @@ async message(list_id){
 
 
   render() {
-    let cards = [];
-    if (picpaths.length !== 0 && this.state.pics && this.state.pics.length !== 0) {
-      cards = this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition));
+    // let cards = [];
+    // if (picpaths.length !== 0 && this.state.pics && this.state.pics.length !== 0) {
+    //   cards = this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition));
 
-    }
+    // }
 
-    let id = (currentListID)?currentListID : 0;
 
     return (
       <div className="wrapper">
@@ -418,12 +415,7 @@ async message(list_id){
           </div>
           <ul className="list-unstyled CTAs">
             <li>
-              {/* <button type="button" className="btn btn-light">
-                Add Book
-              </button> */}
-              {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
-              {console.log("this.state.currentListID", currentListID)}
-              <Upload list_id={this.state.currentListID} />
+              <Upload />
             </li>
           </ul>
           <ul className="list-unstyled components">
@@ -438,10 +430,8 @@ async message(list_id){
           <div id="search"><Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} /></div>
           {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
           <div className="card-inline" id="cards">
-            {cards}
-            {/* {this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition))} */}
-            {/* {this.state.books.map(this.renderBooks())} */}
-            {/* {<CarouselItem imgs={array}></CarouselItem>} */}
+            {/* {cards} */}
+            {this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition))}
           </div>
         </div>
       </div>

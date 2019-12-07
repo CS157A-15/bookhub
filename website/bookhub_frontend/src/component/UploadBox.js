@@ -13,7 +13,7 @@ import UserAuth from '../user_auth';
 let prevListId = 0;
 let currListId = 0;
 // let filepath = "";
-function UploadBox(props, { list_id }) {
+function UploadBox(props) {
   return (
     <Modal
       {...props}
@@ -35,7 +35,6 @@ function UploadBox(props, { list_id }) {
               <form action={"http://localhost:4000/uploadfile?listId=" + currListId} method="POST" encType="multipart/form-data">
                 <input type="file" name="fileToUpload" id="fileToUpload" />
                 <input type="submit" value="Upload Image" name="submit"></input>
-                {/* <Button as="input" type="submit" value="Submit" /> */}
               </form>
             </Col>
             <Col>
@@ -141,20 +140,6 @@ async function addListing(event) {
   };
   
 
-
-// function addToListTable(event) {
-//   event.preventDefault();
-//   console.log("UserAuth.getEmail()", UserAuth.getEmail());
-//   console.log("listId", listId);
-
-//   fetch(`http://localhost:4000/addListTable?username=${UserAuth.getEmail()}&listId=${listId}`)
-//     .then(res => res.json())
-//     .then(res => {
-//     })
-//     .catch(err => console.error(err));
-
-// };
-
 function getMostCurrentListID() {
   fetch(
     `http://localhost:4000/mostCurrentListID`
@@ -163,24 +148,12 @@ function getMostCurrentListID() {
     .then(res => {
       prevListId = res.data;
       currListId = prevListId[0].list_id + 1;
-      console.log("in list id function", prevListId);
+      // console.log("in list id function", prevListId);
     })
     .catch(err => console.error(err));
 
 }
 
-//gets the file name for current listing is there is any so we can add it to the table
-// function getFileForListing (id) {
-//   fetch(
-//     `http://localhost:4000/fileForListing?listId=${id}`
-//   )
-//     .then(res => res.json())
-//     .then(res => {
-//       filepath = res.data;
-//       console.log("filepath", filepath[0].filepath);
-//     })
-//     .catch(err => console.error(err));
-// }
 
 export default function Upload() {
   const [modalShow, setModalShow] = React.useState(false);
