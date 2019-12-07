@@ -4,8 +4,7 @@ const app = express();
 const cors = require("cors");
 const multer = require("multer");
 const path = require("path");
-const base64ToImage = require("base64-img");
-const fs = require("fs");
+
 
 // Create connection
 const db = mysql.createConnection({
@@ -254,28 +253,28 @@ app.get("/addListing", (req, res) => {
 });
 
 // handling the file upload
-const storage = multer.diskStorage({
-  destination: '../bookhub_frontend/public/uploads',//'../uploads',
-  filename: function(req, file, cb){
-    cb(null, list_id+"-"+Date.now()+path.extname(file.originalname));
-  }
-});
+// const storage = multer.diskStorage({
+//   destination: '../bookhub_frontend/public/uploads',//'../uploads',
+//   filename: function (req, file, cb) {
+//     cb(null, list_id + "-" + Date.now() + path.extname(file.originalname));
+//   }
+// });
 
-const upload = multer({
-  storage: storage,
-  limits:{fileSize: 1000000},
-  fileFilter: function(req, file, cb) {
-    checkFileType(file, cb);
-  }
-}).single('fileToUpload');
+// const upload = multer({
+//   storage: storage,
+//   // limits:{fileSize: 1000000},
+//   fileFilter: function (req, file, cb) {
+//     checkFileType(file, cb);
+//   }
+// }).single('fileToUpload');
 
 function checkFileType(file, cb) {
   const filetypes = /jped|jpg|png/;
 
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+  // const mimetype = filetypes.test(file.mimetype);
 
-  if(extname && mimetype){
+  if (extname) { //&& mimetype){
     return cb(null, true);
   } else {
     return cb("Error: images only");
@@ -283,38 +282,104 @@ function checkFileType(file, cb) {
 }
 
 app.post('/uploadfile', (req, res) => {
-  upload(req, res, (err) => {
-    if(err){
-      console.log("error cant upload");
-    } else {
-      if(req.file == undefined){
-        console.log("error no file submitted");
-      } else {
-        console.log("file uploaded successfully");
-      }
+  const {
+    listId
+  } = req.query;
+
+  let filepath;
+  // handling the file upload
+  const storage = multer.diskStorage({
+    destination: '../bookhub_frontend/public/uploads',//'../uploads',
+    filename: function (req, file, cb) {
+      filepath = listId + "-" + Date.now() + path.extname(file.originalname);
+      cb(null, listId+".jpg"); // + "-" + Date.now() + path.extname(file.originalname));
     }
   });
 
-  res.redirect(301,'localhost:3000/');
+  const upload = multer({
+    storage: storage,
+    // limits:{fileSize: 1000000},
+    fileFilter: function (req, file, cb) {
+      checkFileType(file, cb);
+    }
+  }).single('fileToUpload');
 
-  // const  LISTSQUERY =`INSERT INTO usespic (list_id, filepath) VALUES ('${useremail}', '${req.file.filename}')`;
-  // db.query(LISTSQUERY, (err, results) => {
-  //   if (err) {
-  //     return res.send(err);
-  //   } else {
-  //     return res.json({
-  //       data: results
-  //     });
-  //   }
-  // });
+  upload(req, res, (err) => {
+    if (err) {
+      console.log("error cant upload");
+    } else {
+      if (req.file == undefined) {
+        console.log("error no file submitted");
+      } else {
+        console.log("file uploaded successfully");
+        console.log("filepath1", filepath);
+        // return filepath;
+      }
+    }
+  });
+  res.redirect(301, 'localhost:3000/');
+
+});
+
+app.get('/addListTable', (req, res) => {
+  const {
+    useremail,
+    listId
+  } = req.query;
+  console.log("inside add list table");
+  const LISTSQUERY = `INSERT INTO list (email, list_id) VALUES ('${useremail}', '${listId}')`;
+  db.query(LISTSQUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+
+app.get('/addUploadTable', (req, res) => {
+  const {
+    filepath
+  } = req.query;
+  console.log("inside add list table & filepath  = ", filepath);
+  const LISTSQUERY = `INSERT INTO upload (filepath, date) VALUES ('${filepath}', '${Date.now()}')`;
+  db.query(LISTSQUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
+    }
+  });
+});
+
+app.get('/addUsesPicTable', (req, res) => {
+  const {
+    filepath,
+    listId
+  } = req.query;
+  console.log("inside add pic table & filepath  = ", filepath);
+  const LISTSQUERY = `INSERT INTO usespic (list_id, filepath) VALUES ('${listId}', '${filepath}')`;
+  db.query(LISTSQUERY, (err, results) => {
+    if (err) {
+      return res.send(err);
+    } else {
+      return res.json({
+        data: results
+      });
+    }
+  });
 });
 
 app.get('/fileForListing', (req, res) => {
   const {
-    picnumber
+    listId
   } = req.query;
-  // console.log("pcinumber",picnumber);
-  db.query(`SELECT filepath FROM usespic WHERE filepath LIKE'${picnumber}-%'`, (err, results) => {
+  db.query(`SELECT filepath FROM usespic WHERE filepath LIKE '${listId}-%'`, (err, results) => {
     if (err) {
       return res.send(err);
     } else {
@@ -359,7 +424,7 @@ app.get('/mostCurrentListID', (req, res) => {
 
 
 app.get('/conversation', (req, res) => {
-  const {email} = req.query;
+  const { email } = req.query;
   db.query(`(SELECT DISTINCT sender_email 
     FROM messages NATURAL JOIN sender NATURAL JOIN receiver 
     WHERE receiver.receiver_email = '${email}' 
@@ -367,46 +432,46 @@ app.get('/conversation', (req, res) => {
     FROM messages NATURAL JOIN sender NATURAL JOIN receiver 
     WHERE sender.sender_email = '${email}'
     ORDER BY date)`
-    , (err, results) =>{
-      if(err){
-          return res.send(err)
+    , (err, results) => {
+      if (err) {
+        return res.send(err)
       }
       else {
-          return res.json({
-              data: results
-          })
+        return res.json({
+          data: results
+        })
       }
-  });
+    });
 });
 
 
 app.get('/messages', (req, res) => {
-    const {email, otheremail} = req.query;
-    db.query(`SELECT * 
+  const { email, otheremail } = req.query;
+  db.query(`SELECT * 
     FROM messages NATURAL JOIN sender NATURAL JOIN receiver 
     WHERE (sender.sender_email = '${email}'  AND receiver.receiver_email = '${otheremail}')
     OR (sender.sender_email = '${otheremail}' AND receiver.receiver_email = '${email}') 
-    ORDER BY date;`, (err, results) =>{
-        if(err){
-            return res.send(err)
-        }
-        else {
-            return res.json({
-                data: results
-            })
-        }
-    });
+    ORDER BY date;`, (err, results) => {
+    if (err) {
+      return res.send(err)
+    }
+    else {
+      return res.json({
+        data: results
+      })
+    }
+  });
 });
 // INSERT INTO receiver(receiver_email) VALUES( '${receiver_email}');
 // INSERT INTO sender_email(sender_email) VALUES( '${sender_email}')
 
 app.get('/sendMessage', (req, res) => {
   console.log('sent message');
-  const {message } = req.query;
+  const { message } = req.query;
   db.query(`INSERT INTO messages(content) VALUES('${message}')`, (err, results) => {
     if (err) {
       return res.send(err);
-    } 
+    }
     else {
       return res.json({
         data: results
@@ -417,7 +482,7 @@ app.get('/sendMessage', (req, res) => {
 
 app.get('/receiver', (req, res) => {
   console.log('sent receiver');
-  const {receiver_email} = req.query;
+  const { receiver_email } = req.query;
   db.query(`INSERT INTO receiver(receiver_email) VALUES( '${receiver_email}')`, (err, results) => {
     if (err) {
       return res.send(err);
@@ -432,11 +497,11 @@ app.get('/receiver', (req, res) => {
 
 app.get('/sender', (req, res) => {
   console.log('sent sender');
-  const { sender_email} = req.query;
+  const { sender_email } = req.query;
   db.query(`INSERT INTO sender(sender_email) VALUES( '${sender_email}')`, (err, results) => {
     if (err) {
       return res.send(err);
-    } 
+    }
     else {
       return res.json({
         data: results

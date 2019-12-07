@@ -25,6 +25,7 @@ import Card from './../../component/Card.js';
 
 let books = [];
 let picpaths = [];
+let currentListID;
 class Main extends Component {
   constructor(props) {
     super(props);
@@ -129,7 +130,8 @@ class Main extends Component {
       .then(res => res.json())
       .then(res => {
         this.setState({ currentListID: res.data });
-        console.log("currentListID", this.state.currentListID[0].list_id);
+        currentListID = res.data;
+        // console.log("currentListID", this.state.currentListID[0].list_id);
       })
       .catch(err => console.error(err));
   }
@@ -277,12 +279,12 @@ class Main extends Component {
     book_condition
   ) => {
 
-    if (picpaths.length !== 0) {
+    if (this.state.pics) { //picpaths.length !== 0
       const thePic = (element) => element.list_id === list_id;
       const index = this.state.books.findIndex(thePic);
       // console.log("this.state.pics[index]", picpaths[index].filepath);
       // const path1 = (picpaths[index].filepath)?"../../../uploads/" +picpaths[index].filepath:
-      let path = "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg";
+      let path = "../../../uploads/book_default.jpg";
 
       if(picpaths[index] !== undefined){
         path = "../../../uploads/" +picpaths[index].filepath;
@@ -332,6 +334,8 @@ class Main extends Component {
 
     }
 
+    let id = (currentListID)?currentListID : 0;
+
     return (
       <div className="wrapper">
         <nav id="sidebar" align="center">
@@ -351,6 +355,7 @@ class Main extends Component {
                 Add Book
               </button> */}
               {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
+              {console.log("this.state.currentListID", currentListID)}
               <Upload list_id={this.state.currentListID} />
             </li>
           </ul>
