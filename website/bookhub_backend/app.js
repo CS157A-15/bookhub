@@ -240,16 +240,16 @@ app.get("/addListing", (req, res) => {
     }
   });
 
-  const  LISTSQUERY =`INSERT INTO list (email, list_id) VALUES ('${useremail}', '${list_id}')`;
-  db.query(LISTSQUERY, (err, results) => {
-    if (err) {
-      return res.send(err);
-    } else {
-      return res.json({
-        data: results
-      });
-    }
-  });
+  // const  LISTSQUERY =`INSERT INTO list (email, list_id) VALUES ('${useremail}', '${list_id}')`;
+  // db.query(LISTSQUERY, (err, results) => {
+  //   if (err) {
+  //     return res.send(err);
+  //   } else {
+  //     return res.json({
+  //       data: results
+  //     });
+  //   }
+  // });
 
 });
 
@@ -263,7 +263,7 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage: storage,
-  // limits:{fileSize: 1000000},
+  limits:{fileSize: 1000000},
   fileFilter: function(req, file, cb) {
     checkFileType(file, cb);
   }
@@ -294,6 +294,8 @@ app.post('/uploadfile', (req, res) => {
       }
     }
   });
+
+  res.redirect(301,'localhost:3000/');
 
   // const  LISTSQUERY =`INSERT INTO usespic (list_id, filepath) VALUES ('${useremail}', '${req.file.filename}')`;
   // db.query(LISTSQUERY, (err, results) => {
