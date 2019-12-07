@@ -13,7 +13,7 @@ import UserAuth from '../user_auth';
 let prevListId = 0;
 let currListId = 0;
 // let filepath = "";
-function UploadBox(props, { list_id }) {
+function UploadBox(props) {
   return (
     <Modal
       {...props}
@@ -163,7 +163,7 @@ function getMostCurrentListID() {
     .then(res => {
       prevListId = res.data;
       currListId = prevListId[0].list_id + 1;
-      console.log("in list id function", prevListId);
+      // console.log("in list id function", prevListId);
     })
     .catch(err => console.error(err));
 
