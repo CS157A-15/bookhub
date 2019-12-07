@@ -471,13 +471,13 @@ class Main extends Component {
             />
             <h3>Bookhub</h3>
           </div>
-          <ul className="list-unstyled CTAs">
-            <li>
+          <ul align="center" className="list-unstyled CTAs">
+            <li align="center">
               {/* <button type="button" className="btn btn-light">
                 Add Book
               </button> */}
               {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
-              <Upload />
+              <Upload align="center"/>
             </li>
           </ul>
           <ul className="list-unstyled components">

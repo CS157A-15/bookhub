@@ -79,10 +79,15 @@ app.get("/userListings", (req, res) => {
 app.get("/deleteListing", (req, res) => {
   const { email, listID } = req.query;
   db.query(
-    `DELETE FROM List WHERE email = '${email}' AND list_id = '${listID}'`,
-    (err, result) => {
-      if (err) throw err;
-      res.send("Removed Listing with User");
+    `DELETE FROM List WHERE email = '${email}' AND list_id = ${listID}`,
+    (err, results) => {
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.json({
+          data: results
+        });
+      }
     }
   );
 });
@@ -90,20 +95,57 @@ app.get("/deleteListing", (req, res) => {
 app.get("/deleteListedBook", (req, res) => {
   const { listID } = req.query;
   db.query(
-    `DELETE FROM ListedBooks where list_id = ${listID}`,
-    (err, result) => {
-      if (err) throw err;
-      res.send("Removed Book Listing");
+    `DELETE FROM listedbooks WHERE list_id = ${listID}`,
+    (err, results) => {
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.json({
+          data: results
+        });
+      }
     }
   );
 });
 
+app.get("/updateListedBook", (req, res) => {
+  const {
+    listID,
+    bookName,
+    bookEdition,
+    bookISBN,
+    bookPrice,
+    bookType,
+    bookCondition
+  } = req.query;
+  db.query(
+    `UPDATE listedbooks SET title='${bookName}', edition=${bookEdition}, isbn='${bookISBN}', price=${bookPrice}, book_type='${bookType}', book_condition='${bookCondition}' WHERE list_id = ${listID}`,
+    (err, results) => {
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.json({
+          data: results
+        });
+      }
+    }
+  );
+});
+
+
+
 app.get("/profile", (req, res) => {
   const { email } = req.query;
   db.query(`SELECT * FROM users WHERE email = '${email}'`, (err, result) => {
-    if (err) throw err;
-    res.send(result);
-  });
+    (err, results) => {
+      if (err) {
+        return res.send(err);
+      } else {
+        return res.json({
+          data: results
+        });
+      }
+}})
 });
 
 app.get("/dropdownlist", (req, res) => {
@@ -309,7 +351,7 @@ app.get('/lastID', (req, res) => {
 
 app.get('/addLists', (req, res) => {
   const {email, id} = req.query;
-  db.query(`INSERT INTO list (email,list_id) values ('${email}', '${id}' )`, (err, results) => {
+  db.query(`INSERT INTO list (email,list_id) values ('${email}', ${id} )`, (err, results) => {
     if (err) {
       return res.send(err);
     } 

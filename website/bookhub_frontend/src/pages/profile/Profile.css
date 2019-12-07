@@ -5,3 +5,9 @@
 .Top {
   padding-bottom: 3rem;
 }
+
+#delete-b,#edit-b{
+  display:inline-block;
+  vertical-align: top;
+  padding-top: 10px;
+}

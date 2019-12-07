@@ -17,8 +17,8 @@ function UploadBox(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header closeButton>
-        <Modal.Title id="contained-modal-title-vcenter">
+      <Modal.Header align="center" closeButton>
+        <Modal.Title id="contained-modal-title-vcenter" align="center">
           List a book
           </Modal.Title>
       </Modal.Header>
@@ -74,24 +74,22 @@ function UploadBox(props) {
       }
       
 async function addListing(event) {
-          event.preventDefault();
-        console.log("in add listiing");
-        const name = document.getElementsByName("bookname")[0];
-        const edition = document.getElementsByName("bookedition")[0];
-        const isbn = document.getElementsByName("bookisbn")[0];
-        const price = document.getElementsByName("bookprice")[0];
-        const type = document.getElementsByName("booktype")[0];
-        const condition = document.getElementsByName("bookcondition")[0];
-      
+  event.preventDefault();
+  console.log("in add listiing");
+  const name = document.getElementsByName("bookname")[0];
+  const edition = document.getElementsByName("bookedition")[0];
+  const isbn = document.getElementsByName("bookisbn")[0];
+  const price = document.getElementsByName("bookprice")[0];
+  const type = document.getElementsByName("booktype")[0];
+  const condition = document.getElementsByName("bookcondition")[0];
+
   if (name && edition && isbn && price && type && condition) {
           console.log("book attributes", name.value, edition.value, isbn.value,
             price.value, type.value, condition.value);
-    fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
-          .then(res => res.json())
-      .then(res => {
-        })
-        .catch(err => console.error(err));
-  
+    await fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
+      .then(res => res.json())
+      .catch(err => console.error(err));
+        
       var autoIncrementId;
       await fetch(`http://localhost:4000/lastID`)
             .then(res => res.json().then(res => res.data.map((p)=>
