@@ -181,30 +181,6 @@ class Main extends Component {
     this.getRequestedBooksDept(dept);
   };
 
-  //-----------------------Getting the pictures for listing -------------------------------------
-  getBookPic = async list_id => {
-    let path;
-    await fetch(
-      `http://localhost:4000/fileForListing?picnumber=${list_id}`
-    )
-      // .then(res => res.json())
-      // .then(res => {
-      //   path = res.data;
-      //   console.log("path", path[0].filepath);
-      //   // if (path == undefined) {
-      //   //   paths.push("https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg");
-      //   // } else {
-      //   //   if (!paths.includes(path)) {
-      //   //     paths.push("./uploads" + path.filepath);
-      //   //   }
-      //   // }
-      //   // console.log("paths", paths);
-      //   // console.log("IN HEREERERERE!!!!");
-      //   // return path[0].filepath;
-      // })
-      .catch(err => console.error(err));
-
-  }
 
   //----------------------- Rendering the sidebar dropdown -------------------------------------
   renderDropdown = () => {
@@ -300,36 +276,17 @@ class Main extends Component {
     book_type,
     book_condition
   ) => {
-    // this.getBookPic(list_id)
-    // .then()
-    // .then(
-    //   (res) => {
-    //     console.log("in promise!!!!!", res);
-    //     picpath = res;
-    //   }
-    // );
-
-    let image, picpath;
-
-    // fetch(
-    //   `http://localhost:4000/fileForListing?picnumber=${list_id}`
-    // ).then(res => res.json())
-    //   .then(res => {
-    //     console.log("res", res.data[0].filepath);
-    //     picpath = String(res.data[0].filepath);
-    //     this.setState({ picpath: res.data[0].filepath });
-    //     console.log("picpath", picpath);
-
-    //   });
-
-    // return (<Card path={"../../../uploads/"+this.state.picpath} book={({list_id, title, edition, isbn, price, book_type, book_condition})}/>);
 
     if (picpaths.length !== 0) {
       const thePic = (element) => element.list_id === list_id;
       const index = this.state.books.findIndex(thePic);
-      console.log("this.state.pics[index]", picpaths[index].filepath);
-      const path = (picpaths[index].filepath)?"../../../uploads/" +picpaths[index].filepath:
-      "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg";
+      // console.log("this.state.pics[index]", picpaths[index].filepath);
+      // const path1 = (picpaths[index].filepath)?"../../../uploads/" +picpaths[index].filepath:
+      let path = "https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg";
+
+      if(picpaths[index] !== undefined){
+        path = "../../../uploads/" +picpaths[index].filepath;
+      } 
 
       return (
         <div className="card-inline" key={title}>
@@ -362,25 +319,19 @@ class Main extends Component {
           </MDBCol>
         </div>);
     }
-    else{
-      return (<div></div>);
-    }
+    
   };
 
   //----------------------- Handling the file download after upload -------------------------------------
 
 
   render() {
-    // let cards = [];
-    // if (this.state.books && this.state.books.length !== 0) {
-    //   for (let i = 0; i < this.state.currentListID; i = i + 1) {
-    //     // let b = this.state.books[i ];
-    //     cards.push(this.renderBooks(this.state.books[i ].list_id, this.state.books[i ].title,
-    //       this.state.books[i ].edition, this.state.books[i ].isbn, this.state.books[i ].price,
-    //       this.state.books[i ].book_type, this.state.books[i ].book_condition));
-    //   }
-    //   console.log(cards);
-    // }
+    let cards = [];
+    if (picpaths.length !== 0 && this.state.pics && this.state.pics.length !== 0) {
+      cards = this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition));
+
+    }
+
     return (
       <div className="wrapper">
         <nav id="sidebar" align="center">
@@ -400,7 +351,7 @@ class Main extends Component {
                 Add Book
               </button> */}
               {/* <input className="fileInput" type="file" onChange={(e) => this.handleImageChange(e)} /> */}
-              <Upload />
+              <Upload list_id={this.state.currentListID} />
             </li>
           </ul>
           <ul className="list-unstyled components">
@@ -415,8 +366,8 @@ class Main extends Component {
           <div id="search"><Navbar handleSearch={this.handleSearch} enterPressed={this.enterPressed} /></div>
           {/* <h1> Welcome to SJSU Bookhub, {this.props.location.state.username} </h1> */}
           <div className="card-inline" id="cards">
-            {/* {cards} */}
-            {this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition))}
+            {cards}
+            {/* {this.state.books.map(b => this.renderBooks(b.list_id, b.title, b.edition, b.isbn, b.price, b.book_type, b.book_condition))} */}
             {/* {this.state.books.map(this.renderBooks())} */}
             {/* {<CarouselItem imgs={array}></CarouselItem>} */}
           </div>

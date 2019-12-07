@@ -9,7 +9,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import UserAuth from '../user_auth';
 
-function UploadBox(props) {
+
+let listId = 0;
+function UploadBox(props, list_id) {
+  listId = list_id + 1;
   return (
     <Modal
       {...props}
@@ -47,7 +50,7 @@ function UploadBox(props) {
                 </select><p>Book type</p>
 
                 <input type="number" name="bookprice" />   <p>Listing Price</p>
-                <input type="submit" value="Submit" onClick={(e) => addListing(e)} />
+                <input type="submit" value="Submit" onClick={(e) => addListing(e) } />
                 {/* <Button onClick={addListing()}>Submit</Button> */}
               </form>
             </Col>
@@ -64,7 +67,7 @@ function UploadBox(props) {
 
       </Modal.Body>
       <Modal.Footer>
-        <Button onClick={ props.onHide}>Close</Button>
+        <Button onClick={props.onHide}>Close</Button>
       </Modal.Footer>
     </Modal>
   );
@@ -92,12 +95,20 @@ function addListing(event) {
 
   if (name && edition && isbn && price && type && condition) {
     fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}
-    &bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}&user=${UserAuth.getEmail()}`)
+    &bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
       .then(res => res.json())
       .then(res => {
       })
       .catch(err => console.error(err));
 
+    console.log("UserAuth.getEmail()", UserAuth.getEmail());
+    console.log("listId", listId);
+
+    fetch(`http://localhost:4000/addListTable?username=${UserAuth.getEmail()}&listId=${listId}`)
+      .then(res => res.json())
+      .then(res => {
+      })
+      .catch(err => console.error(err));
 
     //clearing form input
     name.value = "";
@@ -109,12 +120,26 @@ function addListing(event) {
   }
 };
 
+function addToListTable(event) {
+  event.preventDefault();
+  console.log("UserAuth.getEmail()", UserAuth.getEmail());
+  console.log("listId", listId);
+
+  fetch(`http://localhost:4000/addListTable?username=${UserAuth.getEmail()}&listId=${listId}`)
+    .then(res => res.json())
+    .then(res => {
+    })
+    .catch(err => console.error(err));
+
+};
+
+
 export default function Upload() {
   const [modalShow, setModalShow] = React.useState(false);
 
   return (
     <ButtonToolbar>
-      <Button id="listbook" variant="primary" onClick={() => setModalShow(true)}>
+      <Button id="listbook" onClick={() => setModalShow(true)}>
         List a book
           </Button>
 
