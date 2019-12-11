@@ -1,5 +1,14 @@
+input[type=button], input[type=submit], input[type=reset]{
+    background-color: rgb(8, 149, 214);
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 10px;
+  }
 
-#listbook button{
-    width:240px !important;
-    position: center;
+form {
+    padding-left:10px;
 }

@@ -4,7 +4,7 @@ import "./Profile.css";
 import Navbar from "../navbar/navbar.js";
 import defaultIcon from "./default-user-icon.jpg";
 import UserAuth from "../../user_auth";
-import {MDBCard, MDBCardBody, MDBCardTitle,MDBCardText, MDBCol} from 'mdbreact';
+import {MDBCard, MDBCardBody, MDBCardTitle,MDBCardText, MDBCol,MDBCardImage} from 'mdbreact';
 import CarouselItem from '../../component/Carousel.js';
 import Button from 'react-bootstrap/Button';
 import Box from '@material-ui/core/Box';
@@ -103,17 +103,18 @@ class Profile extends Component {
     }
 
     const profileListings = listings.map(listing => {
+      var path = "../../../uploads/" + listing.list_id +".jpg" ;
+      var defaultPic = "../../../uploads/book_default.jpg";
       return (
         <div className="col-md-4 pb-3" key={listing.list_id}>
-                  <MDBCol>
-          <MDBCard style={{ width: '17rem' }}>
-            {/* <MDBCardImage
-              className="img-fluid"
-              src="https://www.qualtrics.com/m/assets/blog/wp-content/uploads/2018/08/shutterstock_1068141515.jpg"
-              waves
-            /> */}
-            {/* <CarouselItem>
-            </CarouselItem> */}
+          <MDBCol>
+            <MDBCard style={{ width: '17rem' }}>
+              <MDBCardImage
+                className="img-fluid"
+               src={path}
+               onError={(ev) => ev.target.src=defaultPic}
+                waves
+              />
             <MDBCardBody>
               <MDBCardTitle>{listing.title}</MDBCardTitle>
               <MDBCardText>

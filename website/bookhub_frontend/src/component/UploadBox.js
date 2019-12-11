@@ -9,6 +9,10 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import UserAuth from '../user_auth';
 
+
+let prevListId = 0;
+let currListId = 0;
+// let filepath = "";
 function UploadBox(props) {
   return (
     <Modal
@@ -17,8 +21,8 @@ function UploadBox(props) {
       aria-labelledby="contained-modal-title-vcenter"
       centered
     >
-      <Modal.Header align="center" closeButton>
-        <Modal.Title id="contained-modal-title-vcenter" align="center">
+      <Modal.Header closeButton>
+        <Modal.Title id="contained-modal-title-vcenter">
           List a book
           </Modal.Title>
       </Modal.Header>
@@ -27,7 +31,14 @@ function UploadBox(props) {
         <Container>
           <Row>
             <Col>
-            <meta httpEquiv="Content-Security-Policy" content="default-src 'self'"></meta>
+              <p>1. Upload pictures</p>
+              <form action={"http://localhost:4000/uploadfile?listId=" + currListId} method="POST" encType="multipart/form-data">
+                <input type="file" name="fileToUpload" id="fileToUpload" />
+                <input type="submit" value="Upload Image" name="submit"></input>
+              </form>
+            </Col>
+            <Col>
+              <p>2. Enter book information</p>
               <form>
 
                 <input type="text" name="bookname" /><p>Book name:</p>
@@ -46,54 +57,42 @@ function UploadBox(props) {
                   <option value="paperback">paperback</option>
                   <option value="hardcover">hardcover</option>
                 </select><p>Book type</p>
-                <input type="text" name="bookdepartment" /> <p>Department</p>
-                <input type="text" name="bookcourse" />   <p>Course Number</p>
+
                 <input type="number" name="bookprice" />   <p>Listing Price</p>
                 <input type="submit" value="Submit" onClick={(e) => addListing(e)} />
                 {/* <Button onClick={addListing()}>Submit</Button> */}
-              </form>
-            </Col>
-            <Col>
-              <p>Upload pictures</p>
-              {/* <input className="fileInput" type="file" accept="image/png, image/jpeg" onChange={(e) => handleImageChange(e)} /> */}
-
-              <form action="http://localhost:4000/uploadfile" method="POST" encType="multipart/form-data">
-                <input type="file" name="fileToUpload" id="fileToUpload"/>
-                <input type="submit" value="Upload Image" name="submit"></input>
-                {/* <Button as="input" type="submit" value="Submit" /> */}
               </form>
             </Col>
           </Row>
         </Container>
 
       </Modal.Body>
-          {/* <Modal.Footer>
+      <Modal.Footer>
         <Button onClick={props.onHide}>Close</Button>
-      </Modal.Footer> */}
+      </Modal.Footer>
     </Modal>
         );
       }
       
 async function addListing(event) {
-  event.preventDefault();
-  console.log("in add listiing");
-  const name = document.getElementsByName("bookname")[0];
-  const edition = document.getElementsByName("bookedition")[0];
-  const isbn = document.getElementsByName("bookisbn")[0];
-  const price = document.getElementsByName("bookprice")[0];
-  const type = document.getElementsByName("booktype")[0];
-  const condition = document.getElementsByName("bookcondition")[0];
-  const department = document.getElementsByName("bookdepartment")[0];
-  const course = document.getElementsByName("bookcourse")[0];
-
-
-  if (name && edition && isbn && price && type && condition && department && course) {
+          event.preventDefault();
+        console.log("in add listiing");
+        const name = document.getElementsByName("bookname")[0];
+        const edition = document.getElementsByName("bookedition")[0];
+        const isbn = document.getElementsByName("bookisbn")[0];
+        const price = document.getElementsByName("bookprice")[0];
+        const type = document.getElementsByName("booktype")[0];
+        const condition = document.getElementsByName("bookcondition")[0];
+      
+  if (name && edition && isbn && price && type && condition) {
           console.log("book attributes", name.value, edition.value, isbn.value,
-            price.value, type.value, condition.value, department.value, course.value);
-    await fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
-      .then(res => res.json())
-      .catch(err => console.error(err));
-        
+            price.value, type.value, condition.value);
+    fetch(`http://localhost:4000/addListing?bookName=${name.value}&bookEdition=${edition.value}&bookISBN=${isbn.value}&bookPrice=${price.value}&bookType=${type.value}&bookCondition=${condition.value}`)
+          .then(res => res.json())
+      .then(res => {
+        })
+        .catch(err => console.error(err));
+  
       var autoIncrementId;
       await fetch(`http://localhost:4000/lastID`)
             .then(res => res.json().then(res => res.data.map((p)=>
@@ -105,17 +104,30 @@ async function addListing(event) {
         .then(res => res.json())
         .catch(err => console.error(err));
 
-        await fetch(`http://localhost:4000/addDepartment?department=${department.value}`)
-        .then(res => res.json())
-        .catch(err => console.error(err));
 
-        await fetch(`http://localhost:4000/addCourse?department=${department.value}&course=${course.value}`)
-        .then(res => res.json())
-        .catch(err => console.error(err));
-
-        await fetch(`http://localhost:4000/addUseFor?department=${department.value}&course=${course.value}&list_id=${autoIncrementId}`)
-        .then(res => res.json())
-        .catch(err => console.error(err));
+        console.log("UserAuth.getEmail()", UserAuth.getEmail());
+        console.log("prevListId", prevListId[0].list_id);
+        console.log("currListId", currListId);
+        // console.log("filepath", filepath[0].filepath);
+      
+        fetch(`http://localhost:4000/addListTable?useremail=${UserAuth.getEmail()}&listId=${currListId}`)
+          .then(res => res.json())
+          .then(res => {
+          })
+          .catch(err => console.error(err));
+      
+          fetch(`http://localhost:4000/addUploadTable?filepath=${currListId+".jpg"}`)
+          .then(res => res.json())
+          .then(res => {
+          })
+          .catch(err => console.error(err));
+      
+          fetch(`http://localhost:4000/addUsesPicTable?listId=${currListId}&filepath=${currListId+".jpg"}`)
+            .then(res => res.json())
+            .then(res => {
+            })
+            .catch(err => console.error(err));
+      
 
       //clearing form input
       name.value = "";
@@ -127,25 +139,37 @@ async function addListing(event) {
     }
   };
   
+
+function getMostCurrentListID() {
+  fetch(
+    `http://localhost:4000/mostCurrentListID`
+  )
+    .then(res => res.json())
+    .then(res => {
+      prevListId = res.data;
+      currListId = prevListId[0].list_id + 1;
+      // console.log("in list id function", prevListId);
+    })
+    .catch(err => console.error(err));
+
+}
+
+
 export default function Upload() {
   const [modalShow, setModalShow] = React.useState(false);
-      
-        return (
+  getMostCurrentListID();
+  // getFileForListing(prevListId);
+
+  return (
     <ButtonToolbar>
-          <Button id="listbook" variant="primary" onClick={() => setModalShow(true)}>
-            List a book
+      <Button id="listbook" onClick={() => setModalShow(true)}>
+        List a book
           </Button>
 
-          <UploadBox
-            show={modalShow}
-            onHide={() => setModalShow(false)}
-          />
-        </ButtonToolbar>
-        );
-      }  
-      
-      
-function uploadFiles (fileName, fileData) {
-          fetch(`http://localhost:4000/upload?fileData=${fileData}&fileName=${fileName}`, { mode: 'no-cors' })
-            .catch(err => console.error(err));
-};
+      <UploadBox
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+      />
+    </ButtonToolbar>
+  );
+}
