@@ -10,7 +10,7 @@ const path = require("path");
 const db = mysql.createConnection({
   host: 'localhost',
   user: 'root',
-  password: 'Maninderpal51',
+  password: '!Salmonfoodie22',
   database: 'bookhub'
 });
 
